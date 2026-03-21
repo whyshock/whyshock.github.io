@@ -22,9 +22,7 @@ class BlogManager {
         try {
             // List of blog files to load
             const blogFiles = [
-                'sample-blog-1.txt',
-                'sample-blog-2.txt',
-                'sample-blog-3.txt',
+                'friday-ai-bot-in-mins',
                 'genai-comic-strip-krishna.txt',
                 'gpt-transformers-explained.txt',
                 'parkinsons-law-vs-narayana-murthy.txt',

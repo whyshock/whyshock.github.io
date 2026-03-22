@@ -99,6 +99,16 @@ navLinks.forEach(link => {
     });
 });
 
+// Experience Accordion Toggle
+function toggleExp(card) {
+    card.classList.toggle('open');
+}
+
+// Certification Card Toggle
+function toggleCert(card) {
+    card.classList.toggle('open');
+}
+
 // Smooth Scrolling Function
 function scrollToSection(sectionId) {
     const section = document.getElementById(sectionId);
@@ -214,20 +224,18 @@ function initializeAnimations() {
     const animatedElements = document.querySelectorAll('.section-title, .about-content, .about-stats, .projects-grid, .skills-content, .skills-categories-detailed, .contact-content');
     animatedElements.forEach(el => observer.observe(el));
     
-    // Initially hide project cards and skill items for animation
+    // Initially set up project cards and skill items for animation
     const projectCards = document.querySelectorAll('.project-card');
     const skillItems = document.querySelectorAll('.skill-item');
     
     projectCards.forEach(card => {
-        card.style.opacity = '0';
-        card.style.transform = 'translateY(30px)';
-        card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        card.style.opacity = '1';
+        card.style.transform = 'translateY(0)';
     });
     
     skillItems.forEach(skill => {
-        skill.style.opacity = '0';
-        skill.style.transform = 'translateY(20px)';
-        skill.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+        skill.style.opacity = '1';
+        skill.style.transform = 'translateY(0)';
     });
 }
 
@@ -618,3 +626,110 @@ console.log(`
     ║    Built with ❤️ and lots of ☕      ║
     ╚══════════════════════════════════════╝
 `);
+
+// Neural Network Canvas Animation
+function initNeuralCanvas() {
+    const canvas = document.getElementById('neural-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+
+    function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    const nodes = [];
+    const nodeCount = Math.min(40, Math.floor(window.innerWidth / 35));
+    const connectionDistance = 180;
+
+    for (let i = 0; i < nodeCount; i++) {
+        nodes.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            vx: (Math.random() - 0.5) * 0.4,
+            vy: (Math.random() - 0.5) * 0.4,
+            radius: 1.5 + Math.random() * 2,
+            pulse: Math.random() * Math.PI * 2
+        });
+    }
+
+    function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Draw connections
+        for (let i = 0; i < nodes.length; i++) {
+            for (let j = i + 1; j < nodes.length; j++) {
+                const dx = nodes[i].x - nodes[j].x;
+                const dy = nodes[i].y - nodes[j].y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < connectionDistance) {
+                    const alpha = (1 - dist / connectionDistance) * 0.15;
+                    ctx.beginPath();
+                    ctx.strokeStyle = `rgba(0, 212, 255, ${alpha})`;
+                    ctx.lineWidth = 0.5;
+                    ctx.moveTo(nodes[i].x, nodes[i].y);
+                    ctx.lineTo(nodes[j].x, nodes[j].y);
+                    ctx.stroke();
+                }
+            }
+        }
+
+        // Draw nodes
+        for (const node of nodes) {
+            node.pulse += 0.02;
+            const glow = 0.4 + Math.sin(node.pulse) * 0.3;
+
+            ctx.beginPath();
+            ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(0, 212, 255, ${glow})`;
+            ctx.fill();
+
+            // Move
+            node.x += node.vx;
+            node.y += node.vy;
+
+            // Bounce off edges
+            if (node.x < 0 || node.x > canvas.width) node.vx *= -1;
+            if (node.y < 0 || node.y > canvas.height) node.vy *= -1;
+        }
+
+        requestAnimationFrame(draw);
+    }
+
+    draw();
+}
+
+// AI-themed floating icons
+function createAIFloatingIcons() {
+    const container = document.querySelector('.floating-elements');
+    if (!container) return;
+
+    const icons = ['☁️', '🧠', '⚡', '🔗', '📡', '💡', '🤖', '🛰️'];
+
+    for (let i = 0; i < 8; i++) {
+        const el = document.createElement('span');
+        el.textContent = icons[i % icons.length];
+        el.style.cssText = `
+            position: absolute;
+            font-size: ${14 + Math.random() * 14}px;
+            opacity: ${0.08 + Math.random() * 0.12};
+            left: ${Math.random() * 100}%;
+            top: ${Math.random() * 100}%;
+            animation: float ${15 + Math.random() * 20}s linear infinite;
+            animation-delay: ${Math.random() * 10}s;
+            pointer-events: none;
+            filter: grayscale(0.5);
+        `;
+        container.appendChild(el);
+    }
+}
+
+// Initialize neural canvas and AI icons after load
+document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+        initNeuralCanvas();
+        createAIFloatingIcons();
+    }, 1500);
+});

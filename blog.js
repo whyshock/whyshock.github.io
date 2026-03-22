@@ -623,7 +623,7 @@ class ReadingToolbar {
         const article = document.getElementById('blog-post-article');
         if (!article) return;
 
-        const widths = { narrow: '680px', normal: '860px', wide: '1100px' };
+        const widths = { narrow: '860px', normal: '1100px', wide: '100%' };
         article.style.maxWidth = widths[mode];
 
         // Update active button

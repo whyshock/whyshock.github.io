@@ -29,6 +29,7 @@
             <div class="nav-menu">
                 <a href="#home" class="nav-link">HOME</a>
                 <a href="#about" class="nav-link">ABOUT</a>
+                <a href="#experience" class="nav-link">EXPERIENCE</a>
                 <a href="#projects" class="nav-link">PROJECTS</a>
                 <a href="#skills" class="nav-link">SKILLS</a>
                 <a href="blog.html" class="nav-link">BLOG</a>
@@ -48,24 +49,25 @@
             <div class="matrix-rain"></div>
             <div class="cyber-grid"></div>
             <div class="floating-elements"></div>
+            <canvas id="neural-canvas"></canvas>
         </div>
         <div class="hero-content">
             <div class="hero-text">
                 <h1 class="hero-title">
-                    <span class="glitch-text" data-text="VAISHAK I KUPPAST">VAISHAKH KUPPAST</span>
+                    <span class="glitch-text" data-text="VAISHAKH I KUPPAST">VAISHAKH I KUPPAST</span>
                 </h1>
                 <div class="hero-subtitle-container">
-                    <p class="hero-subtitle">Senior Cloud Solutions Engineer</p>
+                    <p class="hero-subtitle">SDE · Cloud Security · Edge/CDN · AI Researcher · Ex-Founder</p>
                     <div class="tech-stack-preview">
-                        <span class="tech-item">AWS</span>
-                        <span class="tech-item">Machine Learning</span>
-                        <span class="tech-item">Computer Vision</span>
-                        <span class="tech-item">IoT</span>
+                        <span class="tech-item">Cloud Security</span>
+                        <span class="tech-item">Edge / CDN</span>
+                        <span class="tech-item">AI / ML</span>
+                        <span class="tech-item">4x AWS Certified</span>
                     </div>
                 </div>
                 <p class="hero-description">
-                    Architecting next-generation cloud infrastructure and AI-powered solutions at Amazon Web Services. 
-                    Specializing in scalable distributed systems, deep learning frameworks, and edge computing technologies.
+                    6+ years building at Amazon Web Services — from security controls protecting millions of resources to live streaming infrastructure serving 25M+ concurrent viewers. 
+                    Founded an EdTech startup, shipped AI research at Samsung, and built community platforms since I was 18. I build things that matter.
                 </p>
                 <!---
                 <div class="hero-stats">
@@ -119,12 +121,12 @@
                 <div class="about-main">
                     <div class="about-text">
                         <div class="about-intro">
-                            <h3 class="about-subtitle">Cloud Solutions Engineer & AI Researcher</h3>
+                            <h3 class="about-subtitle">Engineer · Builder · Researcher · Founder</h3>
                             <p class="about-description">
-                                Senior Cloud Solutions Engineer at Amazon Web Services, specializing in enterprise-scale distributed systems, 
-                                machine learning infrastructure, and edge computing architectures. With a strong foundation in Electronic and 
-                                Communication Engineering from KLE Technological University, I architect and deploy mission-critical solutions 
-                                that serve millions of users globally.
+                                System Development Engineer at AWS, currently building cloud security posture management for Security Hub. 
+                                Over 6 years at Amazon — progressed from intern to SDE, working across networking, edge/CDN, media streaming, and now security. 
+                                Before AWS, I was an AI researcher at Samsung PRISM, founded an EdTech startup (Aura VR Education), and built community platforms that serve 1000+ users — all while still in college. 
+                                B.E. in Electronics & Communication from KLE Technological University.
                             </p>
                         </div>
                         
@@ -163,19 +165,23 @@
                         </div>
 
                         <div class="certifications">
-                            <h4>Professional Certifications</h4>
+                            <h4>Certifications</h4>
                             <div class="cert-list">
                                 <div class="cert-item">
                                     <i class="fab fa-aws"></i>
-                                    <span>AWS Certified Solutions Architect - Professional</span>
+                                    <span>AWS Solutions Architect – Professional</span>
                                 </div>
                                 <div class="cert-item">
                                     <i class="fab fa-aws"></i>
-                                    <span>AWS Certified DevOps Engineer - Professional</span>
+                                    <span>AWS Solutions Architect – Associate</span>
                                 </div>
                                 <div class="cert-item">
-                                    <i class="fas fa-certificate"></i>
-                                    <span>TensorFlow Developer Certificate</span>
+                                    <i class="fas fa-brain"></i>
+                                    <span>AWS Certified AI Practitioner</span>
+                                </div>
+                                <div class="cert-item">
+                                    <i class="fas fa-network-wired"></i>
+                                    <span>JNCIA-Junos – Juniper Networks</span>
                                 </div>
                             </div>
                         </div>
@@ -185,20 +191,19 @@
                 <div class="about-sidebar">
                     <div class="about-stats">
                         <div class="stat-item">
+                            <div class="stat-number" data-target="25">0</div>
+                            <div class="stat-label">M+ Concurrent Viewers</div>
+                            <p class="stat-desc">Kept live streams running smooth during peak global events by troubleshooting CDN and media infra in real time</p>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" data-target="2000">0</div>
+                            <div class="stat-label">Engineers Served</div>
+                            <p class="stat-desc">Built an AI chatbot that cut query resolution by 80% and saved 20+ team hours every week</p>
+                        </div>
+                        <div class="stat-item">
                             <div class="stat-number" data-target="50">0</div>
-                            <div class="stat-label">Enterprise Projects</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-number" data-target="5">0</div>
-                            <div class="stat-label">Years at AWS</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-number" data-target="1000000">0</div>
-                            <div class="stat-label">Users Served</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-number" data-target="99.9">0</div>
-                            <div class="stat-label">Uptime %</div>
+                            <div class="stat-label">AWS Services Covered</div>
+                            <p class="stat-desc">Created 20+ training labs that reduced new hire onboarding time by 40% with 4.8/5 satisfaction</p>
                         </div>
                     </div>
 
@@ -206,11 +211,12 @@
                         <h4>Technology Stack</h4>
                         <div class="tech-categories">
                             <div class="tech-category">
-                                <h5>Cloud Platforms</h5>
+                                <h5>Cloud & DevOps</h5>
                                 <div class="tech-items">
                                     <span class="tech-badge">AWS</span>
-                                    <span class="tech-badge">Azure</span>
-                                    <span class="tech-badge">GCP</span>
+                                    <span class="tech-badge">CloudFormation</span>
+                                    <span class="tech-badge">Serverless</span>
+                                    <span class="tech-badge">Docker</span>
                                 </div>
                             </div>
                             <div class="tech-category">
@@ -218,26 +224,24 @@
                                 <div class="tech-items">
                                     <span class="tech-badge">Python</span>
                                     <span class="tech-badge">JavaScript</span>
-                                    <span class="tech-badge">Go</span>
-                                    <span class="tech-badge">Java</span>
+                                    <span class="tech-badge">Node.js</span>
+                                    <span class="tech-badge">Bash</span>
                                 </div>
                             </div>
                             <div class="tech-category">
-                                <h5>ML/AI Frameworks</h5>
+                                <h5>AI/ML</h5>
                                 <div class="tech-items">
-                                    <span class="tech-badge">TensorFlow</span>
-                                    <span class="tech-badge">PyTorch</span>
-                                    <span class="tech-badge">Keras</span>
+                                    <span class="tech-badge">Amazon Bedrock</span>
                                     <span class="tech-badge">OpenCV</span>
+                                    <span class="tech-badge">TensorFlow</span>
                                 </div>
                             </div>
                             <div class="tech-category">
-                                <h5>DevOps & Tools</h5>
+                                <h5>Web & Frontend</h5>
                                 <div class="tech-items">
-                                    <span class="tech-badge">Docker</span>
-                                    <span class="tech-badge">Kubernetes</span>
-                                    <span class="tech-badge">Terraform</span>
-                                    <span class="tech-badge">Jenkins</span>
+                                    <span class="tech-badge">HTML/CSS</span>
+                                    <span class="tech-badge">Firebase</span>
+                                    <span class="tech-badge">Google AppScript</span>
                                 </div>
                             </div>
                         </div>
@@ -255,6 +259,132 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Experience Section -->
+    <section id="experience" class="experience">
+        <div class="container">
+            <h2 class="section-title">
+                <span class="glitch-text" data-text="EXPERIENCE">EXPERIENCE</span>
+            </h2>
+            <div class="exp-grid">
+
+                <div class="exp-card" onclick="toggleExp(this)">
+                    <div class="exp-row">
+                        <i class="fab fa-aws exp-icon"></i>
+                        <div class="exp-summary">
+                            <h3>Amazon Web Services</h3>
+                            <span class="exp-role">SDE → CE II → CE I → Associate → Intern</span>
+                        </div>
+                        <span class="exp-date">2020 — Present</span>
+                        <i class="fas fa-chevron-down exp-chevron"></i>
+                    </div>
+                    <div class="exp-details">
+                        <div class="exp-sub">
+                            <h4>System Development Engineer <span>— Security Hub CSPM</span></h4>
+                            <span class="exp-sub-date">Mar 2025 — Present</span>
+                            <p>Developing core features for AWS Security Hub's Cloud Security Posture Management (CSPM) platform. Engineering automated compliance checks and security controls that continuously monitor and protect millions of cloud resources across global customer accounts. Working on detection logic, remediation workflows, and security findings aggregation at massive scale.</p>
+                        </div>
+                        <div class="exp-sub">
+                            <h4>Cloud Engineer II <span>— Media & Content Delivery</span></h4>
+                            <span class="exp-sub-date">Apr 2023 — Mar 2025</span>
+                            <p>Operated and troubleshot live streaming infrastructure supporting events with 25M+ concurrent viewers including major sports broadcasts and global live events. Architected an AI-powered Slack chatbot using Amazon Lex V2, Kendra, and Bedrock that became the go-to knowledge assistant for 2000+ internal engineers, reducing query resolution time by 80% and saving 20+ team hours weekly. Built a CloudFlare-to-CloudFront migration automation tool that compressed a 5-day manual migration process into 2 hours, eliminating 90% of manual steps. Authored 20+ simulation-based challenge labs spanning 50+ AWS services, achieving a 90% completion rate and 4.8/5 satisfaction score — reducing new hire onboarding time by 40%.</p>
+                        </div>
+                        <div class="exp-sub">
+                            <h4>Cloud Engineer I <span>— Storage & Content Delivery</span></h4>
+                            <span class="exp-sub-date">Aug 2021 — Mar 2023</span>
+                            <p>Deep-dived into CloudFront edge network optimization, S3 storage architecture, and content delivery troubleshooting at scale. Earned recognition as both CloudFront Edge Subject Matter Expert and Media SME. Resolved complex caching, origin failover, and SSL/TLS issues for enterprise customers running high-traffic global distributions. Contributed to internal tooling and runbooks that improved team efficiency.</p>
+                        </div>
+                        <div class="exp-sub">
+                            <h4>Cloud Solutions Associate <span>— Networking</span></h4>
+                            <span class="exp-sub-date">Aug 2020 — Aug 2021</span>
+                            <p>First full-time role at AWS — handled complex networking troubleshooting across VPC, Route 53, Elastic Load Balancing, Direct Connect, and Transit Gateway. Diagnosed packet-level issues using Wireshark, tcpdump, and traceroute. Built deep expertise in DNS resolution, SSL handshakes, TCP/IP stack debugging, and hybrid cloud connectivity patterns. Maintained 100% case resolution rate with high customer satisfaction.</p>
+                        </div>
+                        <div class="exp-sub">
+                            <h4>Intern</h4>
+                            <span class="exp-sub-date">Feb 2020 — Jul 2020</span>
+                            <p>Onboarded into AWS cloud infrastructure and customer-facing technical problem solving. Ramped up on core AWS services, internal tooling, and the operational culture of working backwards from the customer. Laid the foundation for a career trajectory from intern to SDE in 5 years.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="exp-card" onclick="toggleExp(this)">
+                    <div class="exp-row">
+                        <i class="fas fa-microchip exp-icon"></i>
+                        <div class="exp-summary">
+                            <h3>Samsung R&D — PRISM</h3>
+                            <span class="exp-role">AI Researcher</span>
+                        </div>
+                        <span class="exp-date">2018 — 2019</span>
+                        <i class="fas fa-chevron-down exp-chevron"></i>
+                    </div>
+                    <div class="exp-details">
+                        <p>Selected for Samsung's prestigious PRISM (Preparing and Inspiring Student Minds) research program at Samsung R&D Institute. Designed and implemented an end-to-end image filtering and categorization pipeline using YOLO object detection and Tesseract OCR to process and quality-filter crowd-sourced image datasets. Built shadow detection, blur analysis, and occlusion detection modules that automated the selection of high-quality, low-dimension images from noisy real-world data — directly contributing to Samsung's computer vision research initiatives.</p>
+                    </div>
+                </div>
+
+                <div class="exp-card" onclick="toggleExp(this)">
+                    <div class="exp-row">
+                        <i class="fas fa-rocket exp-icon"></i>
+                        <div class="exp-summary">
+                            <h3>Aura VR Education</h3>
+                            <span class="exp-role">CEO & Founder</span>
+                        </div>
+                        <span class="exp-date">2019</span>
+                        <i class="fas fa-chevron-down exp-chevron"></i>
+                    </div>
+                    <div class="exp-details">
+                        <p>Founded an EdTech startup while still in university, focused on making education immersive through AR/VR technology. Developed a novel method for playing 4D models reconstructed from live human motion capture on resource-constrained Android devices — solving a real technical challenge in mobile AR rendering. Built a mixed reality application for Indian digital heritage preservation, allowing users to visualize and interact with historical sites through their phones. Pitched to investors, managed a small team, and learned the full spectrum of startup operations from product development to business strategy.</p>
+                    </div>
+                </div>
+
+                <div class="exp-card" onclick="toggleExp(this)">
+                    <div class="exp-row">
+                        <i class="fas fa-graduation-cap exp-icon"></i>
+                        <div class="exp-summary">
+                            <h3>KLE Technological University</h3>
+                            <span class="exp-role">Student Researcher</span>
+                        </div>
+                        <span class="exp-date">2019 — 2020</span>
+                        <i class="fas fa-chevron-down exp-chevron"></i>
+                    </div>
+                    <div class="exp-details">
+                        <p>Conducted undergraduate research across multiple domains of deep learning and computer vision. Built a multi-modal face emotion recognition system fusing VGG-LSTM architectures across audio and video inputs, optimized for real-time inference on Android devices. Developed a multi-oriented text detection system using CNN and Caffe FCN models capable of recognizing text appearing in arbitrary directions in natural scene images. Contributed to a mixed reality research project for digitally preserving and visualizing Indian heritage sites through immersive Android experiences.</p>
+                    </div>
+                </div>
+
+                <div class="exp-card" onclick="toggleExp(this)">
+                    <div class="exp-row">
+                        <i class="fas fa-lightbulb exp-icon"></i>
+                        <div class="exp-summary">
+                            <h3>Make in BVB</h3>
+                            <span class="exp-role">Innovation Evangelist</span>
+                        </div>
+                        <span class="exp-date">2018 — 2020</span>
+                        <i class="fas fa-chevron-down exp-chevron"></i>
+                    </div>
+                    <div class="exp-details">
+                        <p>Led the innovation and maker culture movement at KLE Tech's BVB campus. Organized hackathons, workshops, and maker fairs that brought together hundreds of students to build real-world projects. Mentored junior students on everything from embedded systems to web development, helping them go from idea to prototype. Played a key role in establishing a hands-on building culture that extended beyond the classroom — inspiring students to ship projects, not just submit assignments.</p>
+                    </div>
+                </div>
+
+                <div class="exp-card" onclick="toggleExp(this)">
+                    <div class="exp-row">
+                        <i class="fas fa-code exp-icon"></i>
+                        <div class="exp-summary">
+                            <h3>Rishtas.in</h3>
+                            <span class="exp-role">Freelance Developer</span>
+                        </div>
+                        <span class="exp-date">2018</span>
+                        <i class="fas fa-chevron-down exp-chevron"></i>
+                    </div>
+                    <div class="exp-details">
+                        <p>Built "The Pink" at age 18 — a community matrimonial app for the Aqila Bharatha Shivasimpi Samaj that made local newspaper headlines. Featured dynamic face cropping, profile matching, and community-specific filters. Achieved 100+ downloads on Google Play Store. Later evolved the concept into Rishtas.in — a fully serverless, zero-cost matrimonial platform leveraging GitHub CDN, Google AppScripts, Firebase, and Mail APIs, now serving 1000+ active community members with no operating costs.</p>
+                    </div>
+                </div>
+
             </div>
         </div>
     </section>
@@ -741,56 +871,157 @@
             </div>
 
             <div class="skills-certifications">
-                <h3>Professional Certifications</h3>
-                <div class="cert-grid">
-                    <div class="cert-card">
-                        <div class="cert-icon">
-                            <i class="fab fa-aws"></i>
+                <div class="cert-two-col">
+                    <div class="cert-col">
+                        <h3>Certifications</h3>
+
+                        <div class="cert-card-v2" onclick="toggleCert(this)">
+                            <div class="cert-card-row">
+                                <i class="fab fa-aws cert-v2-icon"></i>
+                                <div class="cert-v2-summary">
+                                    <h4>AWS Solutions Architect – Professional</h4>
+                                    <span>Amazon Web Services</span>
+                                </div>
+                                <i class="fas fa-chevron-down cert-v2-chevron"></i>
+                            </div>
+                            <div class="cert-v2-details">
+                                <p>The highest-level AWS architecture certification. Validates advanced skills in designing complex, multi-tier, scalable, and fault-tolerant systems on AWS — including migration strategies, cost control, and organizational complexity across hybrid environments.</p>
+                                <a href="https://www.credly.com/badges/" target="_blank" class="cert-v2-link"><i class="fas fa-external-link-alt"></i> Verify on Credly</a>
+                            </div>
                         </div>
-                        <div class="cert-info">
-                            <h4>AWS Solutions Architect Associate</h4>
-                            <p>Amazon Web Services</p>
-                            <span class="cert-date">Current</span>
+
+                        <div class="cert-card-v2" onclick="toggleCert(this)">
+                            <div class="cert-card-row">
+                                <i class="fab fa-aws cert-v2-icon"></i>
+                                <div class="cert-v2-summary">
+                                    <h4>AWS Solutions Architect – Associate</h4>
+                                    <span>Amazon Web Services</span>
+                                </div>
+                                <i class="fas fa-chevron-down cert-v2-chevron"></i>
+                            </div>
+                            <div class="cert-v2-details">
+                                <p>Validates expertise in designing distributed systems on AWS — covering compute, networking, storage, databases, and cost optimization. Demonstrates ability to architect secure, resilient, high-performing cloud solutions following the Well-Architected Framework.</p>
+                                <a href="https://www.credly.com/badges/" target="_blank" class="cert-v2-link"><i class="fas fa-external-link-alt"></i> Verify on Credly</a>
+                            </div>
+                        </div>
+
+                        <div class="cert-card-v2" onclick="toggleCert(this)">
+                            <div class="cert-card-row">
+                                <i class="fas fa-brain cert-v2-icon"></i>
+                                <div class="cert-v2-summary">
+                                    <h4>AWS Certified AI Practitioner</h4>
+                                    <span>Early Adopter</span>
+                                </div>
+                                <i class="fas fa-chevron-down cert-v2-chevron"></i>
+                            </div>
+                            <div class="cert-v2-details">
+                                <p>One of the first to earn this certification — validates foundational knowledge of AI/ML concepts, generative AI, and responsible AI practices on AWS. Covers Amazon Bedrock, SageMaker, and the broader AI/ML stack.</p>
+                                <a href="https://www.credly.com/badges/" target="_blank" class="cert-v2-link"><i class="fas fa-external-link-alt"></i> Verify on Credly</a>
+                            </div>
+                        </div>
+
+                        <div class="cert-card-v2" onclick="toggleCert(this)">
+                            <div class="cert-card-row">
+                                <i class="fas fa-network-wired cert-v2-icon"></i>
+                                <div class="cert-v2-summary">
+                                    <h4>JNCIA-Junos</h4>
+                                    <span>Juniper Networks</span>
+                                </div>
+                                <i class="fas fa-chevron-down cert-v2-chevron"></i>
+                            </div>
+                            <div class="cert-v2-details">
+                                <p>Juniper Networks Certified Associate — demonstrates understanding of networking fundamentals, Junos OS, routing/switching concepts, and Juniper device configuration. Covers TCP/IP, OSI model, and network troubleshooting.</p>
+                            </div>
+                        </div>
+
+                        <div class="cert-card-v2" onclick="toggleCert(this)">
+                            <div class="cert-card-row">
+                                <i class="fas fa-project-diagram cert-v2-icon"></i>
+                                <div class="cert-v2-summary">
+                                    <h4>Convolutional Neural Networks</h4>
+                                    <span>deeplearning.ai · Coursera</span>
+                                </div>
+                                <i class="fas fa-chevron-down cert-v2-chevron"></i>
+                            </div>
+                            <div class="cert-v2-details">
+                                <p>Part of Andrew Ng's Deep Learning Specialization. Covers CNN architectures (LeNet, AlexNet, VGG, ResNet, Inception), object detection (YOLO), neural style transfer, and face recognition. Applied directly in Samsung PRISM research.</p>
+                                <a href="https://www.coursera.org/account/accomplishments/" target="_blank" class="cert-v2-link"><i class="fas fa-external-link-alt"></i> View Certificate</a>
+                            </div>
+                        </div>
+
+                        <div class="cert-card-v2" onclick="toggleCert(this)">
+                            <div class="cert-card-row">
+                                <i class="fas fa-code cert-v2-icon"></i>
+                                <div class="cert-v2-summary">
+                                    <h4>Problem Solving (Intermediate)</h4>
+                                    <span>HackerRank</span>
+                                </div>
+                                <i class="fas fa-chevron-down cert-v2-chevron"></i>
+                            </div>
+                            <div class="cert-v2-details">
+                                <p>Proficiency in data structures, algorithms, and computational problem solving — dynamic programming, graph theory, greedy algorithms, and search/sort optimizations.</p>
+                                <a href="https://www.hackerrank.com/certificates/" target="_blank" class="cert-v2-link"><i class="fas fa-external-link-alt"></i> View Certificate</a>
+                            </div>
                         </div>
                     </div>
-                    <div class="cert-card">
-                        <div class="cert-icon">
-                            <i class="fas fa-brain"></i>
+
+                    <div class="cert-col">
+                        <h3>Recognition</h3>
+
+                        <div class="cert-card-v2" onclick="toggleCert(this)">
+                            <div class="cert-card-row">
+                                <i class="fas fa-satellite-dish cert-v2-icon"></i>
+                                <div class="cert-v2-summary">
+                                    <h4>CloudFront Edge SME</h4>
+                                    <span>AWS Internal Recognition</span>
+                                </div>
+                                <i class="fas fa-chevron-down cert-v2-chevron"></i>
+                            </div>
+                            <div class="cert-v2-details">
+                                <p>Subject Matter Expert status for deep expertise in CloudFront edge network architecture. Awarded after demonstrating consistent advanced-level troubleshooting, customer impact, and knowledge contribution across the CDN organization.</p>
+                            </div>
                         </div>
-                        <div class="cert-info">
-                            <h4>AWS AI Practitioner</h4>
-                            <p>Early Adopter Certificate</p>
-                            <span class="cert-date">Current</span>
+
+                        <div class="cert-card-v2" onclick="toggleCert(this)">
+                            <div class="cert-card-row">
+                                <i class="fas fa-video cert-v2-icon"></i>
+                                <div class="cert-v2-summary">
+                                    <h4>Media Services SME</h4>
+                                    <span>AWS Internal Recognition</span>
+                                </div>
+                                <i class="fas fa-chevron-down cert-v2-chevron"></i>
+                            </div>
+                            <div class="cert-v2-details">
+                                <p>Subject Matter Expert for AWS media streaming services — recognized for expertise in live and on-demand video delivery, MediaLive, MediaPackage, and troubleshooting streaming at scale for events with millions of concurrent viewers.</p>
+                            </div>
                         </div>
-                    </div>
-                    <div class="cert-card">
-                        <div class="cert-icon">
-                            <i class="fas fa-network-wired"></i>
+
+                        <div class="cert-card-v2" onclick="toggleCert(this)">
+                            <div class="cert-card-row">
+                                <i class="fas fa-trophy cert-v2-icon"></i>
+                                <div class="cert-v2-summary">
+                                    <h4>All Rounder Award</h4>
+                                    <span>KLE Technological University</span>
+                                </div>
+                                <i class="fas fa-chevron-down cert-v2-chevron"></i>
+                            </div>
+                            <div class="cert-v2-details">
+                                <p>Recognized for outstanding performance across academics, research, entrepreneurship, and extracurriculars. Awarded for founding a startup, Samsung PRISM research, innovation evangelism, and community building — all while maintaining strong academic standing.</p>
+                            </div>
                         </div>
-                        <div class="cert-info">
-                            <h4>JNCIA-Junos</h4>
-                            <p>Juniper Networks Certified Associate</p>
-                            <span class="cert-date">Current</span>
-                        </div>
-                    </div>
-                    <div class="cert-card">
-                        <div class="cert-icon">
-                            <i class="fas fa-globe"></i>
-                        </div>
-                        <div class="cert-info">
-                            <h4>CloudFront Edge SME</h4>
-                            <p>Subject Matter Expert</p>
-                            <span class="cert-date">Current</span>
-                        </div>
-                    </div>
-                    <div class="cert-card">
-                        <div class="cert-icon">
-                            <i class="fas fa-video"></i>
-                        </div>
-                        <div class="cert-info">
-                            <h4>Media SME</h4>
-                            <p>Subject Matter Expert</p>
-                            <span class="cert-date">Current</span>
+
+                        <div class="cert-card-v2" onclick="toggleCert(this)">
+                            <div class="cert-card-row">
+                                <i class="fas fa-globe cert-v2-icon"></i>
+                                <div class="cert-v2-summary">
+                                    <h4>Global Entrepreneurship</h4>
+                                    <span>UMass Lowell</span>
+                                </div>
+                                <i class="fas fa-chevron-down cert-v2-chevron"></i>
+                            </div>
+                            <div class="cert-v2-details">
+                                <p>Completed the Global Entrepreneurship program — covering business model canvas, market validation, lean startup methodology, and cross-cultural entrepreneurship. Applied learnings directly while building Aura VR Education.</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -852,7 +1083,7 @@
                             </div>
                         </a>
                         
-                        <a href="https://github.com/vaishakik" class="contact-method" target="_blank">
+                        <a href="https://github.com/Vaishak" class="contact-method" target="_blank">
                             <div class="method-icon">
                                 <i class="fab fa-github"></i>
                             </div>
@@ -890,7 +1121,7 @@
                     <a href="https://www.linkedin.com/in/vaishakh-i-kuppast/" class="social-link" target="_blank">
                         <i class="fab fa-linkedin"></i>
                     </a>
-                    <a href="https://github.com/vaishakik" class="social-link" target="_blank">
+                    <a href="https://github.com/Vaishak" class="social-link" target="_blank">
                         <i class="fab fa-github"></i>
                     </a>
                 </div>

@@ -1,0 +1,56 @@
+name: Generate Blog Index
+
+on:
+  push:
+    paths:
+      - 'blogs/**'
+    branches:
+      - main
+      - master
+
+jobs:
+  generate-index:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate blog index
+        run: |
+          cd blogs
+          # Find all blog files (exclude readme, images dir, and index.json itself)
+          files=$(find . -maxdepth 1 -type f \
+            ! -name 'readme.md' \
+            ! -name 'index.json' \
+            ! -name '*.md' \
+            ! -name '*.png' \
+            ! -name '*.jpg' \
+            ! -name '*.jpeg' \
+            ! -name '*.gif' \
+            -printf '%f\n' | sort)
+          
+          # Build JSON array
+          json="["
+          first=true
+          for f in $files; do
+            if [ "$first" = true ]; then
+              first=false
+            else
+              json="$json,"
+            fi
+            json="$json\"$f\""
+          done
+          json="$json]"
+          
+          echo "$json" > index.json
+          echo "Generated index.json with contents:"
+          cat index.json
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add blogs/index.json
+          git diff --cached --quiet || git commit -m "chore: auto-update blog index"
+          git push

@@ -2,7 +2,7 @@ TITLE: Deploy a Perplexity-Like AI Chat Interface with Web Search, Voice Input, 
 DATE: 2026-03-22
 AUTHOR: Vaishakh Kuppast
 TAGS: AWS, Serverless, AI, Amazon Bedrock, CloudFormation, Lambda, Chatbot, Claude, Web Search, Voice Input, Open Source
-IMAGE: blogs/images/friday-ui-screenshot.png
+IMAGE: /images/friday-ui-screenshot.png
 
 # Deploy a Perplexity-Like AI Chat Interface with Web Search, Voice Input, and Multi-Model Selection on AWS — In Minutes
 
@@ -16,7 +16,7 @@ As someone who has been juggling between multiple AI chat subscriptions — each
 
 Here's what the interface looks like when you're chatting with Claude Opus 4.5 with extended thinking enabled:
 
-![FRIDAY chat interface showing a conversation with Claude Opus 4.5](friday-ui-screenshot.png)
+![FRIDAY chat interface showing a conversation with Claude Opus 4.5](/images/friday-ui-screenshot.png)
 
 Let me walk you through what you're seeing in this screenshot.
 
@@ -119,6 +119,34 @@ The voice feature uses the `SpeechRecognition` API with continuous recognition a
 Here's the core engineering challenge I had to solve: API Gateway has a hard 30-second integration timeout, but a Claude Opus response can take over 2 minutes. You can't stream a long response through API Gateway in a single HTTP connection.
 
 FRIDAY solves this with what I call a "fire-and-poll" pattern:
+
+```
+ BROWSER                    LAMBDA                    DYNAMODB         BEDROCK
+    │                          │                          │               │
+    │  POST /api/chat          │                          │               │
+    │─────────────────────────►│                          │               │
+    │                          │  PutItem(PENDING)        │               │
+    │                          │─────────────────────────►│               │
+    │  { conversationId }      │                          │               │
+    │◄─────────────────────────│  (kicks off async)       │               │
+    │                          │  [web search if enabled] │               │
+    │                          │──────────────────────────┼──────────────►│
+    │                          │                          │    Stream     │
+    │  POST /api/poll (300ms)  │                          │               │
+    │─────────────────────────►│  GetItem                 │◄──── chunk ───│
+    │  { partial content }     │◄─────────────────────────│               │
+    │◄─────────────────────────│  UpdateItem (300ms)      │◄──── chunk ───│
+    │         ...              │         ...              │      ...      │
+    │                          │                          │               │
+    │  POST /api/poll          │  UpdateItem(COMPLETE)    │◄──── done ────│
+    │─────────────────────────►│─────────────────────────►│               │
+    │  { status: COMPLETE,     │                          │               │
+    │    sources, searchQuery }│                          │               │
+    │◄─────────────────────────│                          │               │
+    │  Stop polling ✓          │                          │               │
+```
+
+Here's the step-by-step:
 
 1. The browser sends a chat request to `/api/chat` with the conversation history, model selection, any file attachment metadata, and web search preferences.
 2. Lambda creates a `PENDING` record in DynamoDB and returns a `conversationId` — this happens in under 1 second.

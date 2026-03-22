@@ -38,42 +38,51 @@ Everything you see here — the avatars, the glitch effects, the particle canvas
 
 FRIDAY runs entirely on AWS serverless services. There are no EC2 instances, no containers, no servers to patch or scale. Here's the high-level architecture:
 
-```mermaid
-graph TB
-    subgraph "Browser"
-        UI[FRIDAY Frontend<br/>friday/index.html<br/>Cyberpunk Theme]
-    end
-
-    subgraph "AWS - FRIDAY Stack"
-        CF[CloudFront Distribution]
-        S3Web[Website Bucket<br/>friday-website-*]
-        APIGW[API Gateway HTTP API]
-        Lambda[FRIDAY Chat Lambda<br/>Node.js 20.x · 2GB · 5min]
-        DDB[DynamoDB<br/>friday-conversations<br/>TTL 30min]
-        S3Attach[Attachments Bucket<br/>friday-attachments-*<br/>24h lifecycle · SSE-S3]
-        Bedrock[Amazon Bedrock<br/>Claude / Nova]
-    end
-
-    subgraph "External Search"
-        DDG[DuckDuckGo HTML Lite<br/>Default · No API key]
-        Brave[Brave Search API<br/>Optional · API key]
-    end
-
-    UI -->|HTTPS| CF
-    CF -->|"/* static"| S3Web
-    CF -->|"/api/*"| APIGW
-    APIGW -->|POST /api/chat| Lambda
-    APIGW -->|POST /api/poll| Lambda
-    APIGW -->|GET /api/health| Lambda
-    APIGW -->|POST /api/upload-url| Lambda
-    Lambda -->|GetObject| S3Attach
-    Lambda -->|PutObject presigned| S3Attach
-    Lambda -->|Read/Write| DDB
-    Lambda -->|InvokeModelWithResponseStream| Bedrock
-    Lambda -->|"Web search<br/>(when enabled)"| DDG
-    Lambda -->|"Web search<br/>(when key provided)"| Brave
-    UI -->|"PUT presigned URL<br/>(direct upload)"| S3Attach
-    UI -->|"Web Speech API<br/>(voice input)"| UI
+```
+┌──────────────────────────────────────────────────────────────────────┐
+│                            BROWSER                                   │
+│   index.html + app.js + style.css                                   │
+│   Vanilla JS · marked.js · highlight.js · KaTeX                     │
+│   localStorage for conversation history                              │
+│   Web Speech API (voice input)                                       │
+└──────────┬───────────────────────────────────────┬───────────────────┘
+           │ HTTPS                                 │ PUT (presigned)
+           ▼                                       │
+┌──────────────────────────────────────────────┐   │
+│              CLOUDFRONT (CDN)                │   │
+│   /*       → S3 Origin (static files)        │   │
+│   /api/*   → API Gateway Origin (Lambda)     │   │
+│   HTTP/2 · HTTPS enforced · gzip/brotli      │   │
+└──────┬──────────────────────┬────────────────┘   │
+       │                      │                    │
+       ▼                      ▼                    │
+┌──────────────┐   ┌──────────────────────┐        │
+│  S3 BUCKET   │   │  API GATEWAY (HTTP)  │        │
+│  (Website)   │   │  POST /api/chat      │        │
+│  Private     │   │  POST /api/poll      │        │
+│  OAC         │   │  POST /api/upload-url│        │
+│              │   │  GET  /api/health    │        │
+└──────────────┘   └──────────┬───────────┘        │
+                              │                    │
+                              ▼                    │
+                ┌──────────────────────────┐       │
+                │     LAMBDA FUNCTION      │       │
+                │     Node.js 20.x         │       │
+                │     2 GB RAM · 5 min     │       │
+                └──┬───────┬───────┬───┬───┘       │
+                   │       │       │   │           │
+     ┌─────────────▼┐ ┌───▼────┐ ┌▼───▼───────────▼──┐
+     │  DynamoDB     │ │Bedrock │ │ S3 Bucket          │
+     │  Streaming    │ │Claude  │ │ (Attachments)      │
+     │  state store  │ │Nova    │ │ 24h lifecycle      │
+     │  30-min TTL   │ │Custom  │ │ AES-256            │
+     └──────────────┘ └────────┘ └────────────────────┘
+                   │
+     ┌─────────────▼──────────────────────┐
+     │        EXTERNAL SEARCH             │
+     │  DuckDuckGo (default, no API key)  │
+     │  Brave Search (optional, API key)  │
+     └────────────────────────────────────┘
 ```
 
 Seven AWS services work together, each chosen for a specific reason:

@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WhyShock - Cyberpunk Portfolio</title>
+    <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -32,6 +33,13 @@
                 <a href="#experience" class="nav-link">EXPERIENCE</a>
                 <a href="#projects" class="nav-link">PROJECTS</a>
                 <a href="#skills" class="nav-link">SKILLS</a>
+                <div class="nav-dropdown">
+                    <a href="#" class="nav-link nav-dropdown-toggle">APPS <i class="fas fa-chevron-down" style="font-size:0.6rem;margin-left:0.3rem;"></i></a>
+                    <div class="nav-dropdown-menu">
+                        <a href="apps/astrocheck/index.html" class="nav-dropdown-item">Astrocheck</a>
+                        <a href="apps/friday/index.html" class="nav-dropdown-item">Friday</a>
+                    </div>
+                </div>
                 <a href="blog.html" class="nav-link">BLOG</a>
                 <a href="#contact" class="nav-link">CONTACT</a>
             </div>
@@ -57,17 +65,12 @@
                     <span class="glitch-text" data-text="VAISHAKH I KUPPAST">VAISHAKH I KUPPAST</span>
                 </h1>
                 <div class="hero-subtitle-container">
-                    <p class="hero-subtitle">SDE · Cloud Security · Edge/CDN · AI Researcher · Ex-Founder</p>
-                    <div class="tech-stack-preview">
-                        <span class="tech-item">Cloud Security</span>
-                        <span class="tech-item">Edge / CDN</span>
-                        <span class="tech-item">AI / ML</span>
-                        <span class="tech-item">4x AWS Certified</span>
-                    </div>
+                    <p class="hero-subtitle">SDE · Cloud Security · Edge/CDN · Media Expert · AI Researcher · Ex-Founder</p>
                 </div>
                 <p class="hero-description">
-                    6+ years building at Amazon Web Services — from security controls protecting millions of resources to live streaming infrastructure serving 25M+ concurrent viewers. 
-                    Founded an EdTech startup, shipped AI research at Samsung, and built community platforms since I was 18. I build things that matter.
+                    6+ years at Amazon Web Services — from building security controls that protect millions of cloud resources to running live streaming infrastructure for 25M+ concurrent viewers. 
+                    Founded an EdTech startup, shipped AI research at Samsung, and built community platforms since I was 18. 
+                    Always chasing the next challenge — I thrive on learning, building, and pushing boundaries.
                 </p>
                 <!---
                 <div class="hero-stats">
@@ -86,11 +89,17 @@
                 </div> --->
                 <div class="hero-buttons">
                     <button class="btn btn-primary" onclick="scrollToSection('projects')">
-                        <i class="fas fa-code"></i> EXPLORE SOLUTIONS
+                        <i class="fas fa-code"></i> EXPLORE MY SOLUTIONS
+                        <span class="btn-hint">From AI chatbots to migration tools</span>
                     </button>
                     <button class="btn btn-secondary" onclick="scrollToSection('contact')">
                         <i class="fas fa-terminal"></i> INITIATE CONTACT
+                        <span class="btn-hint">Got an idea? Let's talk</span>
                     </button>
+                    <a href="blog.html" class="btn btn-secondary">
+                        <i class="fas fa-book-open"></i> READ MY BLOGS
+                        <span class="btn-hint">Tech, life & more</span>
+                    </a>
                     <button class="btn btn-tertiary" onclick="downloadResume()">
                         <i class="fas fa-download"></i> DOWNLOAD RESUME
                     </button>
@@ -125,8 +134,7 @@
                             <p class="about-description">
                                 System Development Engineer at AWS, currently building cloud security posture management for Security Hub. 
                                 Over 6 years at Amazon — progressed from intern to SDE, working across networking, edge/CDN, media streaming, and now security. 
-                                Before AWS, I was an AI researcher at Samsung PRISM, founded an EdTech startup (Aura VR Education), and built community platforms that serve 1000+ users — all while still in college. 
-                                B.E. in Electronics & Communication from KLE Technological University.
+                                Before AWS, I was an AI researcher at Samsung PRISM, founded an EdTech startup (Aura VR Education), and built community platforms that serve 1000+ users.
                             </p>
                         </div>
                         
@@ -269,6 +277,7 @@
             <h2 class="section-title">
                 <span class="glitch-text" data-text="EXPERIENCE">EXPERIENCE</span>
             </h2>
+            <p class="section-hint">Click on any role to expand details</p>
             <div class="exp-grid">
 
                 <div class="exp-card" onclick="toggleExp(this)">
@@ -395,254 +404,204 @@
             <h2 class="section-title">
                 <span class="glitch-text" data-text="PROJECTS">PROJECTS</span>
             </h2>
-            <div class="projects-grid">
-                <!-- Project 1 -->
-                <div class="project-card">
-                    <div class="project-header">
-                        <h3>Rishtas.in - Non-Profit Community Matrimony Platform</h3>
-                        <div class="project-tags">
-                            <span class="tag">Serverless</span>
-                            <span class="tag">Google Cloud</span>
-                            <span class="tag">Firebase</span>
-                            <span class="tag">Non-Profit</span>
-                        </div>
+            <p class="section-hint">Click on any project to expand details</p>
+            <div class="proj-grid">
+
+                <div class="proj-card" onclick="toggleProj(this)">
+                    <div class="proj-row">
+                        <i class="fas fa-heart proj-icon"></i>
+                        <h3>Rishtas.in</h3>
+                        <i class="fas fa-chevron-down proj-chevron"></i>
                     </div>
-                    <div class="project-content">
-                        <p>Architected and developed a zero-cost serverless matrimony platform serving 1000+ community members, leveraging GitHub CDN and Google Cloud's free tier (AppScripts, Firebase, Mail APIs).</p>
-                        <div class="project-metrics">
-                            <div class="metric-item">
-                                <span class="metric-value">1000+</span>
-                                <span class="metric-label">Active Users</span>
-                            </div>
-                            <div class="metric-item">
-                                <span class="metric-value">$0</span>
-                                <span class="metric-label">Operating Cost</span>
-                            </div>
+                    <span class="proj-tagline">Zero-cost community matrimony platform</span>
+                    <div class="proj-details">
+                        <p>Architected a fully serverless matrimonial platform for the Shivasimpi community — running entirely on free-tier infrastructure. Built with GitHub CDN for static hosting, Google AppScripts for backend logic, Firebase for real-time data, and Mail APIs for notifications. The platform serves 1000+ active members with profile matching, community-specific filters, and admin tools — all at zero operating cost. What started as a freelance project at age 18 evolved into a sustainable community service that runs itself.</p>
+                        <div class="proj-metrics">
+                            <span><strong>1000+</strong> Active Users</span>
+                            <span><strong>$0</strong> Operating Cost</span>
+                        </div>
+                        <div class="proj-tags">
+                            <span class="tag">Serverless</span><span class="tag">Google Cloud</span><span class="tag">Firebase</span><span class="tag">Non-Profit</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Project 2 -->
-                <div class="project-card">
-                    <div class="project-header">
+                <div class="proj-card" onclick="toggleProj(this)">
+                    <div class="proj-row">
+                        <i class="fas fa-robot proj-icon"></i>
                         <h3>AI-Powered Slack Chatbot</h3>
-                        <div class="project-tags">
-                            <span class="tag">Amazon Lex V2</span>
-                            <span class="tag">Kendra</span>
-                            <span class="tag">Bedrock</span>
-                            <span class="tag">AI/ML</span>
-                        </div>
+                        <i class="fas fa-chevron-down proj-chevron"></i>
                     </div>
-                    <div class="project-content">
-                        <p>Developed AI-powered Slack chatbot using Amazon Lex V2, Kendra, and Bedrock, serving 2000+ internal engineers and reducing query resolution time by 80%, saving 20+ team hours weekly.</p>
-                        <div class="project-metrics">
-                            <div class="metric-item">
-                                <span class="metric-value">2000+</span>
-                                <span class="metric-label">Engineers Served</span>
-                            </div>
-                            <div class="metric-item">
-                                <span class="metric-value">80%</span>
-                                <span class="metric-label">Time Reduction</span>
-                            </div>
-                            <div class="metric-item">
-                                <span class="metric-value">20+</span>
-                                <span class="metric-label">Hours Saved Weekly</span>
-                            </div>
+                    <span class="proj-tagline">Knowledge assistant for 2000+ AWS engineers</span>
+                    <div class="proj-details">
+                        <p>Designed and built an AI-powered Slack chatbot that became the go-to knowledge assistant for 2000+ internal engineers at AWS. Integrated Amazon Lex V2 for natural language understanding, Kendra for intelligent document search across internal wikis and runbooks, and Bedrock for generative AI responses. The bot handles everything from troubleshooting queries to onboarding questions — reducing query resolution time by 80% and saving the team 20+ hours every week. Went from prototype to org-wide adoption in under 3 months.</p>
+                        <div class="proj-metrics">
+                            <span><strong>2000+</strong> Engineers Served</span>
+                            <span><strong>80%</strong> Faster Resolution</span>
+                            <span><strong>20+</strong> Hours Saved/Week</span>
+                        </div>
+                        <div class="proj-tags">
+                            <span class="tag">Amazon Lex V2</span><span class="tag">Kendra</span><span class="tag">Bedrock</span><span class="tag">AI/ML</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Project 3 -->
-                <div class="project-card">
-                    <div class="project-header">
+                <div class="proj-card" onclick="toggleProj(this)">
+                    <div class="proj-row">
+                        <i class="fas fa-graduation-cap proj-icon"></i>
                         <h3>AWS Challenge Labs Program</h3>
-                        <div class="project-tags">
-                            <span class="tag">AWS Training</span>
-                            <span class="tag">Simulation</span>
-                            <span class="tag">Education</span>
-                            <span class="tag">50+ Services</span>
-                        </div>
+                        <i class="fas fa-chevron-down proj-chevron"></i>
                     </div>
-                    <div class="project-content">
-                        <p>Developed 20 simulation-based training labs across 50+ AWS services, reducing onboarding time by 40% with 90% completion rate and 4.8/5 satisfaction score.</p>
-                        <div class="project-metrics">
-                            <div class="metric-item">
-                                <span class="metric-value">20</span>
-                                <span class="metric-label">Training Labs</span>
-                            </div>
-                            <div class="metric-item">
-                                <span class="metric-value">40%</span>
-                                <span class="metric-label">Time Reduction</span>
-                            </div>
-                            <div class="metric-item">
-                                <span class="metric-value">4.8/5</span>
-                                <span class="metric-label">Satisfaction Score</span>
-                            </div>
+                    <span class="proj-tagline">20+ simulation-based training labs across 50+ services</span>
+                    <div class="proj-details">
+                        <p>Authored 20+ simulation-based challenge labs spanning 50+ AWS services — designed to teach engineers by doing, not reading. Each lab drops users into a realistic broken environment and challenges them to diagnose and fix issues using real AWS consoles and CLIs. Covers everything from VPC networking and IAM policies to CloudFront caching and Lambda debugging. The program achieved a 90% completion rate and 4.8/5 satisfaction score, reducing new hire onboarding time by 40%. Now used as a standard training resource across the organization.</p>
+                        <div class="proj-metrics">
+                            <span><strong>20+</strong> Labs Built</span>
+                            <span><strong>40%</strong> Faster Onboarding</span>
+                            <span><strong>4.8/5</strong> Satisfaction</span>
+                        </div>
+                        <div class="proj-tags">
+                            <span class="tag">AWS Training</span><span class="tag">Simulation</span><span class="tag">Education</span><span class="tag">50+ Services</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Project 4 -->
-                <div class="project-card">
-                    <div class="project-header">
-                        <h3>CloudFlare to CloudFront Migration Tool</h3>
-                        <div class="project-tags">
-                            <span class="tag">AWS Lambda</span>
-                            <span class="tag">Python SDK</span>
-                            <span class="tag">Migration</span>
-                            <span class="tag">Automation</span>
-                        </div>
+                <div class="proj-card" onclick="toggleProj(this)">
+                    <div class="proj-row">
+                        <i class="fas fa-exchange-alt proj-icon"></i>
+                        <h3>CloudFlare → CloudFront Migration Tool</h3>
+                        <i class="fas fa-chevron-down proj-chevron"></i>
                     </div>
-                    <div class="project-content">
-                        <p>Created CloudFlare to CloudFront migration tool using AWS Lambda and Python SDK, reducing transition time from 5 days to 2 hours and eliminating 90% of manual steps.</p>
-                        <div class="project-metrics">
-                            <div class="metric-item">
-                                <span class="metric-value">5 days → 2 hours</span>
-                                <span class="metric-label">Migration Time</span>
-                            </div>
-                            <div class="metric-item">
-                                <span class="metric-value">90%</span>
-                                <span class="metric-label">Manual Steps Eliminated</span>
-                            </div>
+                    <span class="proj-tagline">5-day migration compressed to 2 hours</span>
+                    <div class="proj-details">
+                        <p>Built an automated migration tool that converts CloudFlare CDN configurations to equivalent AWS CloudFront distributions. The tool parses CloudFlare zone settings, page rules, WAF rules, and DNS records — then programmatically creates matching CloudFront distributions, behaviors, Lambda@Edge functions, and Route 53 entries using AWS SDK. What used to take engineers 5 days of manual configuration and testing now completes in 2 hours with 90% fewer manual steps and built-in validation checks.</p>
+                        <div class="proj-metrics">
+                            <span><strong>5 days → 2 hrs</strong> Migration Time</span>
+                            <span><strong>90%</strong> Manual Steps Eliminated</span>
+                        </div>
+                        <div class="proj-tags">
+                            <span class="tag">AWS Lambda</span><span class="tag">Python SDK</span><span class="tag">Migration</span><span class="tag">Automation</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Project 5 -->
-                <div class="project-card">
-                    <div class="project-header">
-                        <h3>Dynamic Spatio-Temporal Update for Immersive AR</h3>
-                        <div class="project-tags">
-                            <span class="tag">AR</span>
-                            <span class="tag">4D Models</span>
-                            <span class="tag">Android</span>
-                            <span class="tag">Research</span>
-                        </div>
+                <div class="proj-card" onclick="toggleProj(this)">
+                    <div class="proj-row">
+                        <i class="fas fa-vr-cardboard proj-icon"></i>
+                        <h3>Dynamic Spatio-Temporal AR</h3>
+                        <i class="fas fa-chevron-down proj-chevron"></i>
                     </div>
-                    <div class="project-content">
-                        <p>Part of my project idea AURA. A method of playing 4D models reconstructed from live RIG of humans in action, in resource constrained devices like Android devices.</p>
-                        <div class="project-links">
-                            <a href="https://docs.google.com/presentation/d/1D8WA-yqKS6GZoMZl7NtulH5OqnmJ9mQVGeKLWcuieCc/edit?usp=sharing" target="_blank" class="project-link">
-                                <i class="fas fa-presentation"></i> Presentation
-                            </a>
+                    <span class="proj-tagline">4D model playback on mobile devices</span>
+                    <div class="proj-details">
+                        <p>Core research project behind Aura VR Education. Developed a novel method for playing 4D models — reconstructed from live motion capture of humans — on resource-constrained Android devices. Solved the challenge of rendering temporally-varying 3D meshes in real-time AR by implementing progressive mesh streaming, LOD switching, and GPU-optimized rendering pipelines. The technique enables immersive AR experiences on mid-range phones without requiring cloud rendering.</p>
+                        <div class="proj-links">
+                            <a href="https://docs.google.com/presentation/d/1D8WA-yqKS6GZoMZl7NtulH5OqnmJ9mQVGeKLWcuieCc/edit?usp=sharing" target="_blank" class="proj-link"><i class="fas fa-external-link-alt"></i> Presentation</a>
+                        </div>
+                        <div class="proj-tags">
+                            <span class="tag">AR</span><span class="tag">4D Models</span><span class="tag">Android</span><span class="tag">Research</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Project 6 -->
-                <div class="project-card">
-                    <div class="project-header">
-                        <h3>Face Emotion Recognition System</h3>
-                        <div class="project-tags">
-                            <span class="tag">Deep Learning</span>
-                            <span class="tag">VGG-LSTM</span>
-                            <span class="tag">Multi-Modal</span>
-                            <span class="tag">Android</span>
-                        </div>
+                <div class="proj-card" onclick="toggleProj(this)">
+                    <div class="proj-row">
+                        <i class="fas fa-smile proj-icon"></i>
+                        <h3>Face Emotion Recognition</h3>
+                        <i class="fas fa-chevron-down proj-chevron"></i>
                     </div>
-                    <div class="project-content">
-                        <p>Deep learning based solution for Emotion recognition using both audio and video input modalities. Fusion of 3 Deep learning models optimized for Android deployment.</p>
-                        <div class="project-links">
-                            <a href="https://drive.google.com/file/d/15tmq380Yno3upgpgxJEW59697zcYRBpm/view?usp=sharing" target="_blank" class="project-link">
-                                <i class="fas fa-file-pdf"></i> Technical Report
-                            </a>
+                    <span class="proj-tagline">Multi-modal deep learning on Android</span>
+                    <div class="proj-details">
+                        <p>Built a multi-modal emotion recognition system that fuses audio and video inputs for real-time emotion detection. Combined VGG-Net for facial feature extraction with LSTM networks for temporal sequence modeling across video frames, plus a parallel audio emotion classifier. The three models are fused using a weighted decision layer optimized for on-device inference. Deployed on Android with TensorFlow Lite — achieving real-time performance on mid-range devices.</p>
+                        <div class="proj-links">
+                            <a href="https://drive.google.com/file/d/15tmq380Yno3upgpgxJEW59697zcYRBpm/view?usp=sharing" target="_blank" class="proj-link"><i class="fas fa-file-pdf"></i> Technical Report</a>
                         </div>
-                        <div class="project-image">
+                        <div class="proj-image">
                             <img src="img/4.PNG" alt="Face Emotion Recognition">
                         </div>
+                        <div class="proj-tags">
+                            <span class="tag">Deep Learning</span><span class="tag">VGG-LSTM</span><span class="tag">Multi-Modal</span><span class="tag">Android</span>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Project 7 -->
-                <div class="project-card">
-                    <div class="project-header">
+                <div class="proj-card" onclick="toggleProj(this)">
+                    <div class="proj-row">
+                        <i class="fas fa-font proj-icon"></i>
                         <h3>Multi-Oriented Text Detection</h3>
-                        <div class="project-tags">
-                            <span class="tag">CNN</span>
-                            <span class="tag">Caffe FCN</span>
-                            <span class="tag">OCR</span>
-                            <span class="tag">Computer Vision</span>
-                        </div>
+                        <i class="fas fa-chevron-down proj-chevron"></i>
                     </div>
-                    <div class="project-content">
-                        <p>Solving the problem of recognizing text appearing in multi-oriented directions in images using CNN and Caffe FCN model.</p>
-                        <div class="project-links">
-                            <a href="https://drive.google.com/file/d/1z9PiAwPn-jJtyS20-84GfIdUMtBLZwZm/view?usp=sharing" target="_blank" class="project-link">
-                                <i class="fas fa-file-pdf"></i> Report
-                            </a>
+                    <span class="proj-tagline">CNN-based text detection in natural scenes</span>
+                    <div class="proj-details">
+                        <p>Tackled the challenge of detecting and recognizing text appearing in arbitrary orientations in natural scene images — signboards, labels, documents at angles. Built a pipeline using CNN for text region proposal and Caffe FCN for pixel-level text segmentation, followed by orientation correction and OCR. The system handles rotated, curved, and perspective-distorted text that traditional OCR engines fail on.</p>
+                        <div class="proj-links">
+                            <a href="https://drive.google.com/file/d/1z9PiAwPn-jJtyS20-84GfIdUMtBLZwZm/view?usp=sharing" target="_blank" class="proj-link"><i class="fas fa-file-pdf"></i> Report</a>
                         </div>
-                        <div class="project-image">
+                        <div class="proj-image">
                             <img src="img/full.png" alt="Multi-Oriented Text Detection">
                         </div>
+                        <div class="proj-tags">
+                            <span class="tag">CNN</span><span class="tag">Caffe FCN</span><span class="tag">OCR</span><span class="tag">Computer Vision</span>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Project 8 -->
-                <div class="project-card">
-                    <div class="project-header">
+                <div class="proj-card" onclick="toggleProj(this)">
+                    <div class="proj-row">
+                        <i class="fas fa-filter proj-icon"></i>
                         <h3>Image Filtering for Categorization</h3>
-                        <div class="project-tags">
-                            <span class="tag">YOLO</span>
-                            <span class="tag">Tesseract OCR</span>
-                            <span class="tag">Computer Vision</span>
-                            <span class="tag">ML Pipeline</span>
-                        </div>
+                        <i class="fas fa-chevron-down proj-chevron"></i>
                     </div>
-                    <div class="project-content">
-                        <p>Pipeline to filter crowd-sourced data and select good and low dimension images. Shadow and Blur detection, Occlusion Detection from YOLO model.</p>
-                        <div class="project-links">
-                            <a href="https://drive.google.com/file/d/0B8AyX_m81TrNN2F3b0hNSmpUdjVQVnVTQTNEcG5HMk9NQmRZ/view?usp=sharing" target="_blank" class="project-link">
-                                <i class="fas fa-file-pdf"></i> Report
-                            </a>
+                    <span class="proj-tagline">Samsung PRISM — ML pipeline for data quality</span>
+                    <div class="proj-details">
+                        <p>Built under Samsung's PRISM research program. Designed an end-to-end ML pipeline to automatically filter and categorize crowd-sourced image datasets. The pipeline includes shadow detection using histogram analysis, blur detection via Laplacian variance, occlusion detection using YOLO object detection, and text extraction with Tesseract OCR. Automatically selects high-quality, properly-framed images from noisy real-world data — directly feeding Samsung's computer vision research initiatives.</p>
+                        <div class="proj-links">
+                            <a href="https://drive.google.com/file/d/0B8AyX_m81TrNN2F3b0hNSmpUdjVQVnVTQTNEcG5HMk9NQmRZ/view?usp=sharing" target="_blank" class="proj-link"><i class="fas fa-file-pdf"></i> Report</a>
+                        </div>
+                        <div class="proj-tags">
+                            <span class="tag">YOLO</span><span class="tag">Tesseract OCR</span><span class="tag">Computer Vision</span><span class="tag">ML Pipeline</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Project 9 -->
-                <div class="project-card">
-                    <div class="project-header">
-                        <h3>Mixed Reality for Indian Digital Heritage</h3>
-                        <div class="project-tags">
-                            <span class="tag">Mixed Reality</span>
-                            <span class="tag">Heritage</span>
-                            <span class="tag">Android</span>
-                            <span class="tag">Research</span>
-                        </div>
+                <div class="proj-card" onclick="toggleProj(this)">
+                    <div class="proj-row">
+                        <i class="fas fa-landmark proj-icon"></i>
+                        <h3>Mixed Reality for Indian Heritage</h3>
+                        <i class="fas fa-chevron-down proj-chevron"></i>
                     </div>
-                    <div class="project-content">
-                        <p>Industrial Research Project creating Mixed Reality experience for visualizing Indian Digital Heritage sites through Android app.</p>
-                        <div class="project-image">
+                    <span class="proj-tagline">Preserving heritage through immersive AR</span>
+                    <div class="proj-details">
+                        <p>Industrial research project focused on digitally preserving and visualizing Indian heritage sites through mixed reality. Built an Android application that overlays historically accurate 3D reconstructions of monuments and artifacts onto real-world camera views. Users can walk around physical heritage sites and see them restored to their original glory through their phone screens — complete with contextual information, audio narration, and interactive exploration.</p>
+                        <div class="proj-image">
                             <img src="img/3.jpg" alt="Mixed Reality Heritage Project">
                         </div>
+                        <div class="proj-tags">
+                            <span class="tag">Mixed Reality</span><span class="tag">Heritage</span><span class="tag">Android</span><span class="tag">Research</span>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Project 10 -->
-                <div class="project-card">
-                    <div class="project-header">
-                        <h3>Matrimonial App - The PINK</h3>
-                        <div class="project-tags">
-                            <span class="tag">Android</span>
-                            <span class="tag">PHP</span>
-                            <span class="tag">Google Scripts</span>
-                            <span class="tag">Community</span>
-                        </div>
+                <div class="proj-card" onclick="toggleProj(this)">
+                    <div class="proj-row">
+                        <i class="fas fa-mobile-alt proj-icon"></i>
+                        <h3>The PINK — Matrimonial App</h3>
+                        <i class="fas fa-chevron-down proj-chevron"></i>
                     </div>
-                    <div class="project-content">
-                        <p>Freelance project - Matrimonial app for Aqila Bharatha Shivasimpi Samaj community. Features Dynamic Face Cropping. 100+ Downloads on Google Play Store.</p>
-                        <div class="project-links">
-                            <a href="https://play.google.com/store/apps/details?id=appinventor.ai_vaishakikuppast_tech.Spreadsheet" target="_blank" class="project-link">
-                                <i class="fab fa-google-play"></i> Play Store
-                            </a>
+                    <span class="proj-tagline">Community app that made newspaper headlines at age 18</span>
+                    <div class="proj-details">
+                        <p>My first real project — built at age 18 as a freelance developer. A matrimonial app for the Aqila Bharatha Shivasimpi Samaj community featuring dynamic face cropping for profile photos, community-specific matching filters, and family-tree integration. The app made local newspaper headlines and hit 100+ downloads on Google Play Store. This project taught me everything about shipping a real product — from user research and UI design to backend architecture and Play Store deployment.</p>
+                        <div class="proj-links">
+                            <a href="https://play.google.com/store/apps/details?id=appinventor.ai_vaishakikuppast_tech.Spreadsheet" target="_blank" class="proj-link"><i class="fab fa-google-play"></i> Play Store</a>
                         </div>
-                        <div class="project-metrics">
-                            <div class="metric-item">
-                                <span class="metric-value">100+</span>
-                                <span class="metric-label">Downloads</span>
-                            </div>
+                        <div class="proj-metrics">
+                            <span><strong>100+</strong> Downloads</span>
+                        </div>
+                        <div class="proj-tags">
+                            <span class="tag">Android</span><span class="tag">PHP</span><span class="tag">Google Scripts</span><span class="tag">Community</span>
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </section>
@@ -1029,6 +988,33 @@
         </div>
     </section>
 
+    <!-- Blog Promo Section -->
+    <section class="blog-promo">
+        <div class="container">
+            <div class="blog-promo-content">
+                <div class="blog-promo-text">
+                    <h2>I Write Too</h2>
+                    <p>Tech deep-dives, lessons from building things, and the occasional life reflection. From deploying AI chatbots to navigating Parkinson's Law — it's all in there.</p>
+                    <a href="blog.html" class="btn btn-primary">
+                        <i class="fas fa-book-open"></i> Read the Blog
+                    </a>
+                </div>
+                <div class="blog-promo-preview">
+                    <div class="promo-card" onclick="window.location.href='blog.html'">
+                        <span class="promo-tag">Latest</span>
+                        <h4>Deploy a Perplexity-Like AI Chat Interface</h4>
+                        <p>Multi-model serverless chatbot with CloudFormation</p>
+                    </div>
+                    <div class="promo-card" onclick="window.location.href='blog.html'">
+                        <span class="promo-tag">Popular</span>
+                        <h4>GPT & Transformers Explained</h4>
+                        <p>How the tech behind ChatGPT actually works</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Contact Section -->
     <section id="contact" class="contact">
         <div class="container">
@@ -1083,7 +1069,7 @@
                             </div>
                         </a>
                         
-                        <a href="https://github.com/Vaishak" class="contact-method" target="_blank">
+                        <a href="https://github.com/whyshock" class="contact-method" target="_blank">
                             <div class="method-icon">
                                 <i class="fab fa-github"></i>
                             </div>
@@ -1112,7 +1098,7 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-text">
-                    <p>&copy; 2025 WhyShock. All rights reserved.</p>
+                    <p>&copy; WhyShock. All rights reserved.</p>
                 </div>
                 <div class="footer-social">
                     <a href="mailto:vaishak.i.kuppast@gmail.com" class="social-link">
@@ -1121,13 +1107,22 @@
                     <a href="https://www.linkedin.com/in/vaishakh-i-kuppast/" class="social-link" target="_blank">
                         <i class="fab fa-linkedin"></i>
                     </a>
-                    <a href="https://github.com/Vaishak" class="social-link" target="_blank">
+                    <a href="https://github.com/whyshock" class="social-link" target="_blank">
                         <i class="fab fa-github"></i>
                     </a>
                 </div>
             </div>
         </div>
     </footer>
+
+    <!-- Floating Font Size Controls -->
+    <div class="floating-font-controls">
+        <span class="font-ctrl-label">FONT</span>
+        <div class="font-ctrl-btns">
+            <button id="font-down" class="font-ctrl" title="Decrease text size">A−</button>
+            <button id="font-up" class="font-ctrl" title="Increase text size">A+</button>
+        </div>
+    </div>
 
     <!-- Floating Theme Toggle -->
     <button id="theme-toggle" class="floating-theme-toggle">

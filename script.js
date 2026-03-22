@@ -109,6 +109,11 @@ function toggleCert(card) {
     card.classList.toggle('open');
 }
 
+// Project Card Toggle
+function toggleProj(card) {
+    card.classList.toggle('open');
+}
+
 // Smooth Scrolling Function
 function scrollToSection(sectionId) {
     const section = document.getElementById(sectionId);
@@ -240,43 +245,45 @@ function initializeAnimations() {
 }
 
 // Contact Form Handling
-contactForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    
-    const formData = new FormData(contactForm);
-    const name = formData.get('name');
-    const email = formData.get('email');
-    const message = formData.get('message');
-    
-    // Simple form validation
-    if (!name || !email || !message) {
-        showNotification('Please fill in all fields', 'error');
-        return;
-    }
-    
-    if (!isValidEmail(email)) {
-        showNotification('Please enter a valid email address', 'error');
-        return;
-    }
-    
-    // Simulate form submission
-    const submitBtn = contactForm.querySelector('button[type="submit"]');
-    const originalText = submitBtn.innerHTML;
-    
-    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> SENDING...';
-    submitBtn.disabled = true;
-    
-    setTimeout(() => {
-        submitBtn.innerHTML = '<i class="fas fa-check"></i> MESSAGE SENT!';
-        showNotification('Message sent successfully! I\'ll get back to you soon.', 'success');
-        contactForm.reset();
+if (contactForm) {
+    contactForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        const formData = new FormData(contactForm);
+        const name = formData.get('name');
+        const email = formData.get('email');
+        const message = formData.get('message');
+        
+        // Simple form validation
+        if (!name || !email || !message) {
+            showNotification('Please fill in all fields', 'error');
+            return;
+        }
+        
+        if (!isValidEmail(email)) {
+            showNotification('Please enter a valid email address', 'error');
+            return;
+        }
+        
+        // Simulate form submission
+        const submitBtn = contactForm.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> SENDING...';
+        submitBtn.disabled = true;
         
         setTimeout(() => {
-            submitBtn.innerHTML = originalText;
-            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fas fa-check"></i> MESSAGE SENT!';
+            showNotification('Message sent successfully! I\'ll get back to you soon.', 'success');
+            contactForm.reset();
+            
+            setTimeout(() => {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }, 2000);
         }, 2000);
-    }, 2000);
-});
+    });
+}
 
 // Email validation function
 function isValidEmail(email) {
@@ -350,81 +357,114 @@ function showNotification(message, type = 'info') {
     }, 5000);
 }
 
-// Enhanced Matrix Rain Effect with Words and Numbers
+// Enhanced Matrix Rain Effect with Words and Numbers — Canvas-based for smooth continuous rain
 function createMatrixRain() {
     const matrixContainer = document.querySelector('.matrix-rain');
     if (!matrixContainer) return;
-    
-    // Clear existing columns
+
     matrixContainer.innerHTML = '';
-    
-    // Expanded tech-related words and numbers for more variety
-    const matrixWords = [
-        'AWS', 'CLOUD', 'AI', 'ML', 'API', 'CODE', 'DATA', 'TECH', 'DEV', 'OPS',
-        'PYTHON', 'JS', 'REACT', 'NODE', 'DOCKER', 'K8S', 'GIT', 'SQL', 'HTTP',
-        '01', '10', '11', '00', '101', '110', '001', '111', '010', '100',
-        'LAMBDA', 'S3', 'EC2', 'RDS', 'VPC', 'IAM', 'SQS', 'SNS', 'ECS', 'EKS',
-        'TENSORFLOW', 'PYTORCH', 'KERAS', 'OPENCV', 'NUMPY', 'PANDAS', 'FLASK',
-        'AZURE', 'GCP', 'KUBERNETES', 'TERRAFORM', 'JENKINS', 'ANSIBLE', 'NGINX',
-        'REDIS', 'MONGODB', 'POSTGRES', 'MYSQL', 'ELASTICSEARCH', 'KAFKA', 'SPARK',
-        'HADOOP', 'BLOCKCHAIN', 'QUANTUM', 'NEURAL', 'DEEP', 'LEARNING', 'VISION',
-        'NLP', 'GPU', 'CPU', 'RAM', 'SSD', 'API', 'REST', 'GRAPHQL', 'WEBSOCKET',
-        '1010', '1100', '0011', '1001', '0110', '1111', '0000', '1011', '0101'
+
+    const canvas = document.createElement('canvas');
+    canvas.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;';
+    matrixContainer.appendChild(canvas);
+    const ctx = canvas.getContext('2d');
+
+    function resize() {
+        canvas.width = matrixContainer.offsetWidth;
+        canvas.height = matrixContainer.offsetHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    const words = [
+        'AWS','CLOUD','AI','ML','API','CODE','DATA','TECH','DEV','OPS',
+        'PYTHON','JS','REACT','NODE','DOCKER','K8S','GIT','SQL','HTTP',
+        'LAMBDA','S3','EC2','RDS','VPC','IAM','SQS','SNS','ECS','EKS',
+        'TENSORFLOW','PYTORCH','KERAS','OPENCV','NUMPY','PANDAS',
+        'AZURE','GCP','TERRAFORM','JENKINS','NGINX',
+        'REDIS','MONGODB','POSTGRES','KAFKA','SPARK',
+        'BLOCKCHAIN','NEURAL','DEEP','VISION','NLP','GPU',
+        '01','10','101','110','1010','1100','0011','1001'
     ];
-    
-    // Increase number of columns for denser effect
-    const columns = Math.floor(window.innerWidth / 60);
-    
-    for (let i = 0; i < columns; i++) {
-        const column = document.createElement('div');
-        column.className = 'matrix-column';
-        
-        // Randomize column properties for more dynamic effect
-        const fontSize = 10 + Math.random() * 6; // 10-16px
-        const opacity = 0.4 + Math.random() * 0.4; // 0.4-0.8
-        const speed = 6 + Math.random() * 10; // 6-16s
-        const delay = Math.random() * 10; // 0-10s
-        
-        column.style.cssText = `
-            position: absolute;
-            left: ${i * 60}px;
-            top: -100%;
-            width: 60px;
-            font-family: 'Orbitron', monospace;
-            font-size: ${fontSize}px;
-            color: #00d4ff;
-            opacity: ${opacity};
-            animation: matrix-fall ${speed}s linear infinite;
-            animation-delay: ${delay}s;
-            text-align: center;
-            line-height: 1.6;
-            text-shadow: 0 0 5px #00d4ff;
-        `;
-        
-        let text = '';
-        const wordsInColumn = 20 + Math.floor(Math.random() * 15); // 20-35 words
-        for (let j = 0; j < wordsInColumn; j++) {
-            const word = matrixWords[Math.floor(Math.random() * matrixWords.length)];
-            // Add some random highlighting
-            if (Math.random() < 0.1) {
-                text += `<span style="color: #ffffff; text-shadow: 0 0 10px #ffffff;">${word}</span><br>`;
-            } else if (Math.random() < 0.05) {
-                text += `<span style="color: #3b82f6; text-shadow: 0 0 8px #3b82f6;">${word}</span><br>`;
-            } else {
-                text += word + '<br>';
+
+    const colW = 60;
+    const cols = Math.ceil(canvas.width / colW) + 2;
+
+    // Each column tracks its own drops
+    const drops = [];
+    for (let i = 0; i < cols; i++) {
+        const speed = 0.4 + Math.random() * 0.8; // px per frame
+        const fontSize = 10 + Math.random() * 4;
+        drops.push({
+            x: i * colW + Math.random() * 10,
+            y: -Math.random() * canvas.height, // stagger start
+            speed,
+            fontSize,
+            opacity: 0.3 + Math.random() * 0.4,
+            words: [],
+        });
+        // Pre-fill words for this column
+        const count = 20 + Math.floor(Math.random() * 15);
+        for (let j = 0; j < count; j++) {
+            drops[i].words.push(words[Math.floor(Math.random() * words.length)]);
+        }
+    }
+
+    let animId;
+    function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        for (const col of drops) {
+            ctx.font = `${col.fontSize}px Orbitron, monospace`;
+            ctx.textAlign = 'center';
+            const lineH = col.fontSize * 1.8;
+            const totalH = col.words.length * lineH;
+
+            for (let j = 0; j < col.words.length; j++) {
+                const wy = col.y + j * lineH;
+                // Only draw if on screen
+                if (wy < -lineH || wy > canvas.height + lineH) continue;
+
+                // Highlight some words
+                if (j % 12 === 0) {
+                    ctx.fillStyle = `rgba(255, 255, 255, ${col.opacity * 0.9})`;
+                    ctx.shadowColor = '#ffffff';
+                    ctx.shadowBlur = 8;
+                } else if (j % 7 === 0) {
+                    ctx.fillStyle = `rgba(59, 130, 246, ${col.opacity * 0.9})`;
+                    ctx.shadowColor = '#3b82f6';
+                    ctx.shadowBlur = 6;
+                } else {
+                    ctx.fillStyle = `rgba(0, 212, 255, ${col.opacity})`;
+                    ctx.shadowColor = '#00d4ff';
+                    ctx.shadowBlur = 4;
+                }
+
+                ctx.fillText(col.words[j], col.x, wy);
+            }
+            ctx.shadowBlur = 0;
+
+            // Move column down
+            col.y += col.speed;
+
+            // When the entire column has scrolled past the bottom, reset to top
+            if (col.y > canvas.height + 20) {
+                col.y = -totalH;
+                // Shuffle words for variety
+                for (let j = col.words.length - 1; j > 0; j--) {
+                    const k = Math.floor(Math.random() * (j + 1));
+                    [col.words[j], col.words[k]] = [col.words[k], col.words[j]];
+                }
             }
         }
-        column.innerHTML = text;
-        
-        matrixContainer.appendChild(column);
+
+        animId = requestAnimationFrame(draw);
     }
-    
-    // Add periodic regeneration for continuous effect
-    setTimeout(() => {
-        if (matrixContainer.classList.contains('active')) {
-            createMatrixRain();
-        }
-    }, 30000); // Regenerate every 30 seconds
+
+    draw();
+
+    // Store cleanup ref
+    matrixContainer._stopRain = () => cancelAnimationFrame(animId);
 }
 
 // Start matrix after loading
@@ -481,10 +521,8 @@ style.textContent = `
     }
     
     @keyframes matrix-fall {
-        0% { transform: translateY(-100vh); opacity: 0; }
-        10% { opacity: 0.6; }
-        90% { opacity: 0.6; }
-        100% { transform: translateY(100vh); opacity: 0; }
+        0% { transform: translateY(-100vh); }
+        100% { transform: translateY(100vh); }
     }
     
     .matrix-column {
@@ -596,20 +634,37 @@ window.addEventListener('scroll', throttle(() => {
     updateActiveNavLink();
 }, 100));
 
+// Font Size Controls
+let currentScale = 100;
+document.addEventListener('DOMContentLoaded', function() {
+    var fontUp = document.getElementById('font-up');
+    var fontDown = document.getElementById('font-down');
+    if (fontUp) {
+        fontUp.addEventListener('click', function() {
+            if (currentScale < 130) {
+                currentScale += 8;
+                document.documentElement.style.setProperty('font-size', currentScale + '%', 'important');
+            }
+        });
+    }
+    if (fontDown) {
+        fontDown.addEventListener('click', function() {
+            if (currentScale > 85) {
+                currentScale -= 8;
+                document.documentElement.style.setProperty('font-size', currentScale + '%', 'important');
+            }
+        });
+    }
+});
+
 // Download Resume Function
 function downloadResume() {
-    // Create a temporary link element
     const link = document.createElement('a');
-    link.href = '#'; // Replace with actual resume URL
-    link.download = 'show/Vaishakh I Kuppast Resume 3.pdf';
-    
-    // Show notification that resume download would start
-    showNotification('Resume download would started', 'info');
-    
-    // Uncomment the following lines when you have an actual resume file
-     document.body.appendChild(link);
-     link.click();
-     document.body.removeChild(link);
+    link.href = 'Profile.pdf';
+    link.download = 'Vaishakh_I_Kuppast_Resume.pdf';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
 }
 
 // Console Easter Egg

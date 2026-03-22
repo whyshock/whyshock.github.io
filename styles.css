@@ -907,14 +907,14 @@ body {
     white-space: nowrap;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
     .btn-hint {
         display: none;
     }
     .hero-buttons .btn:nth-child(1) { width: 100%; }
-    .hero-buttons .btn:nth-child(2) { width: 92%; }
-    .hero-buttons .btn:nth-child(3) { width: 84%; }
-    .hero-buttons .btn:nth-child(4) { width: 70%; }
+    .hero-buttons .btn:nth-child(2) { width: 88%; }
+    .hero-buttons .btn:nth-child(3) { width: 76%; }
+    .hero-buttons .btn:nth-child(4) { width: 64%; max-width: none; min-width: fit-content; }
 }
 
 .btn {

@@ -3077,6 +3077,12 @@ section {
 }
 
 @media (max-width: 768px) {
+    .floating-font-controls {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
     .floating-theme-toggle {
         bottom: 1.5rem;
         right: 1.5rem;

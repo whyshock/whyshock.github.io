@@ -2,7 +2,7 @@ TITLE: Deploy a Perplexity-Like AI Chat Interface with Web Search, Voice Input, 
 DATE: 2026-03-22
 AUTHOR: Vaishakh Kuppast
 TAGS: AWS, Serverless, AI, Amazon Bedrock, CloudFormation, Lambda, Chatbot, Claude, Web Search, Voice Input, Open Source
-IMAGE: /images/friday-ui-screenshot.png
+IMAGE: images/friday-ui-screenshot.png
 
 # Deploy a Perplexity-Like AI Chat Interface with Web Search, Voice Input, and Multi-Model Selection on AWS — In Minutes
 
@@ -16,7 +16,7 @@ As someone who has been juggling between multiple AI chat subscriptions — each
 
 Here's what the interface looks like when you're chatting with Claude Opus 4.5 with extended thinking enabled:
 
-![FRIDAY chat interface showing a conversation with Claude Opus 4.5](/images/friday-ui-screenshot.png)
+![FRIDAY chat interface showing a conversation with Claude Opus 4.5](images/friday-ui-screenshot.png)
 
 Let me walk you through what you're seeing in this screenshot.
 

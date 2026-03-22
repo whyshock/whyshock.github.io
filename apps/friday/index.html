@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FRIDAY — Cyberpunk AI Assistant</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect fill='%23050508' width='100' height='100' rx='16'/%3E%3Ctext x='50' y='68' text-anchor='middle' font-family='monospace' font-size='44' font-weight='bold' fill='%234a7dff'%3EF%3C/text%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Orbitron:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs2015.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<canvas id="particleCanvas" style="position:fixed;inset:0;z-index:0;pointer-events:none"></canvas>
+
+<div id="app" class="app-container">
+<!-- ===== SIDEBAR ===== -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-header-row">
+      <h1 class="sidebar-title">
+        <span class="friday-logo-glow">F</span>
+        <span class="glitch-text" data-text="FRIDAY">FRIDAY</span>
+      </h1>
+      <button class="sidebar-toggle" onclick="toggleSidebar()" title="Hide sidebar">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="11 17 6 12 11 7"/><polyline points="18 17 13 12 18 7"/></svg>
+      </button>
+    </div>
+    <div class="search-wrapper">
+      <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" class="search-input" id="searchInput" placeholder="Search conversations..." oninput="searchConversations(this.value)">
+    </div>
+    <button class="new-chat-btn" onclick="newChat()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      NEW CHAT
+    </button>
+  </div>
+  <div class="conversation-list" id="convList"></div>
+  <div class="sidebar-footer">
+    <span class="status-dot" id="statusDot"></span>
+    <span id="statusText">Checking...</span>
+    <span style="margin-left:auto" id="convCount">0</span> chats
+    <button class="clear-all-btn" onclick="clearAllHistory()">PURGE</button>
+  </div>
+</div>
+
+<!-- ===== MAIN CONTENT ===== -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+<div class="main-content">
+  <div class="chat-header">
+    <button class="header-toggle" id="headerToggle" onclick="toggleSidebar()" title="Show sidebar">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <select class="model-selector" id="modelSelect" onchange="changeModel()">
+      <optgroup label="Claude 4.x (Latest)">
+        <option value="us.anthropic.claude-opus-4-5-20251101-v1:0">Claude Opus 4.5 (Most Capable)</option>
+        <option value="us.anthropic.claude-sonnet-4-5-20250929-v1:0">Claude Sonnet 4.5</option>
+        <option value="us.anthropic.claude-haiku-4-5-20251001-v1:0">Claude Haiku 4.5 (Fast)</option>
+        <option value="us.anthropic.claude-opus-4-20250514-v1:0">Claude Opus 4</option>
+        <option value="us.anthropic.claude-sonnet-4-20250514-v1:0">Claude Sonnet 4</option>
+      </optgroup>
+      <optgroup label="Claude 3.7">
+        <option value="us.anthropic.claude-3-7-sonnet-20250219-v1:0">Claude 3.7 Sonnet (Thinking)</option>
+        <option value="eu.anthropic.claude-3-7-sonnet-20250219-v1:0">Claude 3.7 Sonnet EU</option>
+      </optgroup>
+      <optgroup label="Claude 3.5">
+        <option value="us.anthropic.claude-3-5-sonnet-20241022-v2:0" selected>Claude 3.5 Sonnet v2</option>
+        <option value="us.anthropic.claude-3-5-sonnet-20240620-v1:0">Claude 3.5 Sonnet v1</option>
+        <option value="us.anthropic.claude-3-5-haiku-20241022-v1:0">Claude 3.5 Haiku</option>
+      </optgroup>
+      <optgroup label="Claude 3 (Legacy)">
+        <option value="us.anthropic.claude-3-opus-20240229-v1:0">Claude 3 Opus</option>
+        <option value="us.anthropic.claude-3-sonnet-20240229-v1:0">Claude 3 Sonnet</option>
+        <option value="us.anthropic.claude-3-haiku-20240307-v1:0">Claude 3 Haiku</option>
+      </optgroup>
+      <optgroup label="Amazon Nova">
+        <option value="us.amazon.nova-pro-v1:0">Amazon Nova Pro</option>
+        <option value="us.amazon.nova-lite-v1:0">Amazon Nova Lite</option>
+        <option value="us.amazon.nova-micro-v1:0">Amazon Nova Micro</option>
+      </optgroup>
+      <optgroup label="Custom">
+        <option value="__custom__">Custom Model ID...</option>
+      </optgroup>
+    </select>
+    <div class="header-controls">
+      <button class="settings-btn" id="themeBtn" onclick="toggleTheme()" title="Toggle light/dark theme">
+        <svg id="themeSun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg id="themeMoon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <span class="header-btn-label">THEME</span>
+      </button>
+      <label class="header-control-label" for="textSizeSelect">
+        <span class="header-btn-label">SIZE</span>
+        <select class="text-size-select" id="textSizeSelect" onchange="setTextSize(this.value)" title="Text size">
+          <option value="sm">A⁻</option>
+          <option value="md" selected>A</option>
+          <option value="lg">A⁺</option>
+          <option value="xl">A⁺⁺</option>
+        </select>
+      </label>
+      <button class="settings-btn" onclick="showSettings()" title="Settings">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        <span class="header-btn-label">CONFIG</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Sticky cost bar -->
+  <div id="costBarWrapper">
+    <div class="chat-cost-bar" id="costBar"></div>
+  </div>
+
+  <div class="messages-container" id="messages">
+    <div class="empty-state" id="emptyState"></div>
+  </div>
+
+  <div class="input-container">
+    <div class="input-wrapper">
+      <div class="attachment-area" id="attachmentArea"></div>
+      <div class="voice-preview" id="voicePreview" style="display:none"></div>
+      <div class="input-row">
+        <div class="human-avatar-wrap" id="inputAvatarWrap">
+          <div class="message-avatar human" id="inputAvatar"></div>
+          <span class="typing-dot"></span>
+        </div>
+        <div class="input-field-wrapper">
+          <textarea class="input-field" id="input" placeholder="Enter command..." rows="1"
+            onkeydown="handleKeyDown(event)" oninput="autoResize(this);onInputTyping();" onpaste="handlePaste(event)"></textarea>
+        </div>
+        <button class="input-send-btn send-action" id="sendBtn" onclick="handleSendClick()" title="Send">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </button>
+        <button class="input-send-btn stop-action" id="stopBtn" onclick="stopProcessing()" style="display:none" title="Stop">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="4" width="16" height="16" rx="2"/></svg>
+        </button>
+      </div>
+      <div class="input-actions">
+        <label class="thinking-toggle" title="Enable extended thinking">
+          <input type="checkbox" id="thinkingToggle" onchange="toggleThinking()" style="display:none">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V17a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 0 1 7-7z"/><line x1="9" y1="21" x2="15" y2="21"/></svg>
+          <span id="thinkingLabel">Think</span>
+        </label>
+        <label class="thinking-toggle" id="smartSummaryToggle" title="Summarize files before sending — reduces tokens and cost">
+          <input type="checkbox" id="smartSummaryCheck" onchange="toggleSmartSummary()" style="display:none">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          <span>Smart</span>
+        </label>
+        <label class="thinking-toggle" id="webSearchToggle" title="Enable web search grounding">
+          <input type="checkbox" id="webSearchCheck" onchange="toggleWebSearch()" style="display:none">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          <span>Search</span>
+        </label>
+        <span class="input-actions-spacer"></span>
+        <button class="input-action-btn" onclick="document.getElementById('fileInput').click()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+          ATTACH
+        </button>
+        <button class="input-action-btn" onclick="expandTextarea()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+          EXPAND
+        </button>
+        <button class="input-action-btn mic-action" id="micBtn" onclick="toggleVoiceInput()" title="Voice input" style="display:none">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+          VOICE
+        </button>
+        <input type="file" id="fileInput" style="display:none" multiple onchange="handleFileSelect(event)"
+          accept="image/jpeg,image/png,image/gif,image/webp,application/pdf,text/plain,text/markdown,text/csv,text/html,application/json,application/xml,text/xml,text/yaml,text/javascript,text/typescript,text/x-python,text/x-java,text/x-c,text/x-c++,text/x-go,text/x-rust,text/x-ruby,text/x-php,text/x-sh,text/x-sql,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation,.log,.out,.err,.yml,.ts,.py,.java,.c,.cpp,.go,.rs,.rb,.php,.sh,.sql,.doc,.docx,.xls,.xlsx,.ppt,.pptx">
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ===== SETTINGS MODAL ===== -->
+<div class="modal-overlay" id="settingsModal" style="display:none" onclick="hideSettings(event)">
+<div class="modal" onclick="event.stopPropagation()">
+  <h2><span style="color:var(--cyan)">⚙</span> SYSTEM CONFIG</h2>
+
+  <div class="modal-field">
+    <label>RESPONSE PROTOCOL</label>
+    <div class="response-style-group" id="responseStyleGroup">
+      <div class="style-card selected" data-style="precise" onclick="selectStyle('precise')">
+        <div class="style-icon">🎯</div>
+        <div class="style-name">PRECISE</div>
+        <div class="style-desc">Deterministic, focused. Best for code &amp; facts.</div>
+      </div>
+      <div class="style-card" data-style="balanced" onclick="selectStyle('balanced')">
+        <div class="style-icon">⚖️</div>
+        <div class="style-name">BALANCED</div>
+        <div class="style-desc">Mix of accuracy and creativity.</div>
+      </div>
+      <div class="style-card" data-style="creative" onclick="selectStyle('creative')">
+        <div class="style-icon">🎨</div>
+        <div class="style-name">CREATIVE</div>
+        <div class="style-desc">Exploratory, expressive. Brainstorming mode.</div>
+      </div>
+    </div>
+    <input type="hidden" id="responseStyle" value="precise">
+  </div>
+
+  <hr class="modal-divider">
+
+  <div class="modal-field" style="margin-bottom:8px">
+    <div class="advanced-toggle" id="advancedToggle" onclick="toggleAdvanced()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+      ADVANCED PARAMETERS
+    </div>
+    <div class="advanced-panel" id="advancedPanel">
+      <span class="advanced-reset" onclick="resetAdvancedToStyle()">↺ Reset defaults</span>
+      <div class="param-row">
+        <div class="param-label">Temperature<div class="param-sub">Randomness</div></div>
+        <input type="range" class="param-slider" id="sliderTemp" min="0" max="1" step="0.01" value="0.1"
+          oninput="document.getElementById('valTemp').textContent=parseFloat(this.value).toFixed(2)">
+        <span class="param-val" id="valTemp">0.10</span>
+      </div>
+      <div class="param-row">
+        <div class="param-label">Top P<div class="param-sub">Nucleus sampling</div></div>
+        <input type="range" class="param-slider" id="sliderTopP" min="0" max="1" step="0.01" value="0.15"
+          oninput="document.getElementById('valTopP').textContent=parseFloat(this.value).toFixed(2)">
+        <span class="param-val" id="valTopP">0.15</span>
+      </div>
+      <div class="param-row">
+        <div class="param-label">Top K<div class="param-sub">Token pool</div></div>
+        <input type="range" class="param-slider" id="sliderTopK" min="0" max="500" step="1" value="0"
+          oninput="document.getElementById('valTopK').textContent=parseInt(this.value)">
+        <span class="param-val" id="valTopK">0</span>
+      </div>
+      <div class="param-row">
+        <div class="param-label">Max Tokens<div class="param-sub">Output limit</div></div>
+        <input type="range" class="param-slider" id="sliderMaxTokens" min="256" max="16000" step="256" value="4096"
+          oninput="document.getElementById('valMaxTokens').textContent=parseInt(this.value).toLocaleString()">
+        <span class="param-val" id="valMaxTokens" style="min-width:52px">4,096</span>
+      </div>
+    </div>
+  </div>
+
+  <hr class="modal-divider">
+
+  <div class="modal-field">
+    <label>BRAVE SEARCH API KEY <span style="font-weight:400;color:var(--t3)">(For web search)</span></label>
+    <input type="password" id="braveApiKey" class="modal-input" placeholder="BSA-xxxxxxxxxxxxxxxxxxxxxxxx" autocomplete="off">
+    <div class="hint">Optional — enables richer Brave Search results. Without a key, DuckDuckGo is used (free, no key needed). Get a Brave key at <a href="https://brave.com/search/api/" target="_blank" rel="noopener" style="color:var(--cyan)">brave.com/search/api</a></div>
+  </div>
+
+  <hr class="modal-divider">
+
+  <div class="modal-field">
+    <label>CUSTOM MODEL ID <span style="font-weight:400;color:var(--t3)">(Override)</span></label>
+    <input type="text" id="customModelId" class="modal-input" placeholder="e.g. us.anthropic.claude-opus-4-5-20251101-v1:0">
+    <div class="hint">Any Bedrock model ID. Leave blank to use dropdown.</div>
+  </div>
+
+  <div class="modal-field">
+    <label>SYSTEM CONTEXT <span style="font-weight:400;color:var(--t3)">(Optional)</span></label>
+    <textarea id="systemContext" class="modal-textarea" placeholder="You are FRIDAY, a cyberpunk AI assistant..."></textarea>
+    <div class="hint">Custom instructions for every conversation</div>
+  </div>
+
+  <div class="modal-btns">
+    <button class="btn-secondary" onclick="hideSettings()">CANCEL</button>
+    <button class="btn-primary" onclick="saveSettings()">SAVE CONFIG</button>
+  </div>
+</div>
+</div>
+
+
+<script src="app.js"></script>
+</body>
+</html>

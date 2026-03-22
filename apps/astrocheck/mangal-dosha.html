@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔥 Mangal Dosha Calculator - मांगलिक दोष</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Philosopher:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .mangal-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .birth-form {
+            background: linear-gradient(135deg, rgba(26, 26, 62, 0.95), rgba(13, 27, 42, 0.95));
+            border: 1px solid rgba(255, 99, 71, 0.4);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            font-family: 'Philosopher', sans-serif;
+            font-size: 1rem;
+            background: linear-gradient(135deg, rgba(10, 10, 26, 0.9), rgba(26, 26, 62, 0.9));
+            border: 1px solid rgba(255, 99, 71, 0.3);
+            border-radius: 10px;
+            color: var(--cosmic-white);
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #ff6347;
+            box-shadow: 0 0 15px rgba(255, 99, 71, 0.3);
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .mars-icon {
+            font-size: 4rem;
+            color: #ff6347;
+            text-shadow: 0 0 30px rgba(255, 99, 71, 0.6);
+            animation: marsGlow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes marsGlow {
+            from { text-shadow: 0 0 30px rgba(255, 99, 71, 0.6); }
+            to { text-shadow: 0 0 50px rgba(255, 99, 71, 0.9), 0 0 80px rgba(255, 99, 71, 0.4); }
+        }
+
+        .calculate-mangal-btn {
+            background: linear-gradient(135deg, #ff6347, #ff4500, #ff6347);
+            color: white;
+        }
+
+        .calculate-mangal-btn:hover {
+            box-shadow: 0 10px 40px rgba(255, 99, 71, 0.5);
+        }
+
+        .result-card {
+            background: linear-gradient(135deg, rgba(26, 26, 62, 0.95), rgba(13, 27, 42, 0.95));
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .result-card.manglik {
+            border-color: rgba(255, 99, 71, 0.6);
+            background: linear-gradient(135deg, rgba(255, 99, 71, 0.1), rgba(26, 26, 62, 0.95));
+        }
+
+        .result-card.non-manglik {
+            border-color: rgba(74, 222, 128, 0.6);
+            background: linear-gradient(135deg, rgba(74, 222, 128, 0.1), rgba(26, 26, 62, 0.95));
+        }
+
+        .result-card.cancelled {
+            border-color: rgba(251, 191, 36, 0.6);
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.1), rgba(26, 26, 62, 0.95));
+        }
+
+        .manglik-badge {
+            display: inline-block;
+            padding: 15px 40px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            border-radius: 50px;
+            margin: 20px 0;
+        }
+
+        .manglik-badge.yes {
+            background: rgba(255, 99, 71, 0.2);
+            color: #ff6347;
+            border: 2px solid #ff6347;
+        }
+
+        .manglik-badge.no {
+            background: rgba(74, 222, 128, 0.2);
+            color: #4ade80;
+            border: 2px solid #4ade80;
+        }
+
+        .manglik-badge.partial {
+            background: rgba(251, 191, 36, 0.2);
+            color: #fbbf24;
+            border: 2px solid #fbbf24;
+        }
+
+        .planet-positions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin: 25px 0;
+        }
+
+        .planet-pos {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .planet-pos .planet-name {
+            font-weight: bold;
+            color: var(--star-gold);
+            margin-bottom: 5px;
+        }
+
+        .planet-pos .planet-sign {
+            font-size: 1.1rem;
+        }
+
+        .planet-pos .planet-house {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .house-chart {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 3px;
+            max-width: 400px;
+            margin: 25px auto;
+            background: rgba(255, 215, 0, 0.1);
+            padding: 3px;
+            border-radius: 10px;
+        }
+
+        .house-cell {
+            background: rgba(10, 10, 26, 0.8);
+            padding: 12px 8px;
+            text-align: center;
+            font-size: 0.85rem;
+            min-height: 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .house-cell.mars-house {
+            background: rgba(255, 99, 71, 0.2);
+            border: 1px solid #ff6347;
+        }
+
+        .house-num {
+            font-size: 0.7rem;
+            opacity: 0.6;
+            margin-bottom: 3px;
+        }
+
+        .remedies-section {
+            background: rgba(255, 99, 71, 0.1);
+            border: 1px solid rgba(255, 99, 71, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .remedies-section h4 {
+            color: #ff6347;
+            margin-bottom: 15px;
+        }
+
+        .remedies-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .remedies-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .remedies-list li:last-child {
+            border-bottom: none;
+        }
+
+        .remedy-icon {
+            color: #ff6347;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--celestial-blue);
+            text-decoration: none;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: var(--star-gold);
+        }
+
+        .location-helper {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 5px;
+        }
+
+        .cancellation-info {
+            background: rgba(251, 191, 36, 0.15);
+            border: 1px solid rgba(251, 191, 36, 0.4);
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+
+        .cancellation-info h5 {
+            color: #fbbf24;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="stars"></div>
+    <div class="twinkling"></div>
+    <div class="constellation"></div>
+    
+    <div class="planets">
+        <div class="planet sun" title="Sun - सूर्य"></div>
+        <div class="planet moon" title="Moon - चन्द्र"></div>
+        <div class="planet mars" title="Mars - मंगल"></div>
+        <div class="planet jupiter" title="Jupiter - गुरु"></div>
+        <div class="planet venus" title="Venus - शुक्र"></div>
+        <div class="planet saturn" title="Saturn - शनि"></div>
+    </div>
+
+    <div class="container mangal-container">
+        <a href="index.html" class="back-link">← Back to Kundli Matching</a>
+
+        <header style="text-align: center; padding: 30px 0;">
+            <div class="mars-icon">🔥</div>
+            <h1 style="font-family: 'Cinzel', serif; font-size: 2.5rem; background: linear-gradient(135deg, #ff6347, #ffd700); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                Mangal Dosha Calculator
+            </h1>
+            <p class="subtitle" style="color: #ff6347;">मांगलिक दोष परीक्षण</p>
+            <p class="tagline" style="margin-top: 10px;">Calculate Mars affliction based on your birth chart using Vedic Astrology</p>
+        </header>
+
+        <div class="birth-form">
+            <h3 style="color: var(--star-gold); margin-bottom: 20px; text-align: center;">Enter Birth Details</h3>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="birth-date">
+                        <span class="label-icon">📅</span> Date of Birth
+                    </label>
+                    <input type="date" id="birth-date" required>
+                </div>
+                <div class="form-group">
+                    <label for="birth-time">
+                        <span class="label-icon">🕐</span> Time of Birth
+                    </label>
+                    <input type="time" id="birth-time" value="12:00" step="60" required>
+                    <p class="location-helper">Enter your exact birth time</p>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="birth-lat">
+                        <span class="label-icon">🌍</span> Latitude
+                    </label>
+                    <input type="number" id="birth-lat" step="0.0001" value="20.5937" required>
+                    <p class="location-helper">Default: India (20.5937° N)</p>
+                </div>
+                <div class="form-group">
+                    <label for="birth-lng">
+                        <span class="label-icon">🌐</span> Longitude
+                    </label>
+                    <input type="number" id="birth-lng" step="0.0001" value="78.9629" required>
+                    <p class="location-helper">Default: India (78.9629° E)</p>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="timezone">
+                        <span class="label-icon">⏰</span> Timezone Offset (hours from UTC)
+                    </label>
+                    <input type="number" id="timezone" step="0.5" placeholder="e.g., 5.5 for IST" value="5.5" required>
+                    <p class="location-helper">IST = +5.5, EST = -5, PST = -8</p>
+                </div>
+                <div class="form-group">
+                    <label for="birth-place">
+                        <span class="label-icon">📍</span> Birth Place (optional)
+                    </label>
+                    <input type="text" id="birth-place" placeholder="e.g., New Delhi, India">
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 20px;">
+                <p style="font-size: 0.9rem; opacity: 0.7; margin-bottom: 15px;">
+                    Common Indian Cities: Delhi (28.6139, 77.2090) | Mumbai (19.0760, 72.8777) | Bangalore (12.9716, 77.5946) | Chennai (13.0827, 80.2707)
+                </p>
+                <button id="calculate-mangal" class="calculate-btn calculate-mangal-btn">
+                    <span class="btn-icon">🔥</span>
+                    <span>Calculate Mangal Dosha</span>
+                    <span class="btn-icon">🔥</span>
+                </button>
+            </div>
+        </div>
+
+        <div id="mangal-results" class="hidden">
+            <!-- Results will be populated here -->
+        </div>
+
+        <footer style="text-align: center; padding: 30px 0; border-top: 1px solid rgba(255, 255, 255, 0.1); margin-top: 40px;">
+            <div class="zodiac-band">
+                <span>♈</span><span>♉</span><span>♊</span><span>♋</span><span>♌</span><span>♍</span>
+                <span>♎</span><span>♏</span><span>♐</span><span>♑</span><span>♒</span><span>♓</span>
+            </div>
+            <p style="margin-top: 15px; opacity: 0.7;">Based on Vedic Astrology • Lahiri Ayanamsa • Sidereal Zodiac</p>
+            <p style="margin-top: 10px;"><a href="index.html" style="color: var(--celestial-blue); text-decoration: none;">☽ Kundli Matching (Dasa Koota) →</a></p>
+        </footer>
+    </div>
+
+    <script src="mangal-calculator.js?v=1"></script>
+</body>
+</html>

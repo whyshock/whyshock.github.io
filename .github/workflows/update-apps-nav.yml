@@ -1,0 +1,70 @@
+name: Update Apps Navigation
+
+on:
+  push:
+    paths:
+      - 'apps/**'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-apps-nav:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Update apps dropdown in index.html
+        run: |
+          python3 - << 'EOF'
+          import re, glob, os
+
+          apps = []
+          for d in sorted(glob.glob('apps/**/index.html', recursive=True)):
+              parts = d.replace('apps/', '').replace('/index.html', '')
+              folder = parts.split('/')[-1]
+              display = folder.replace('-', ' ').replace('_', ' ').title()
+              apps.append(f'                        <a href="{d}" class="nav-dropdown-item">{display}</a>')
+
+          if not apps:
+              print("No apps found under apps/, skipping")
+              exit(0)
+
+          items = '\n'.join(apps)
+          replacement = (
+              '<div class="nav-dropdown">\n'
+              '                    <a href="#" class="nav-link nav-dropdown-toggle">'
+              'APPS <i class="fas fa-chevron-down" style="font-size:0.6rem;margin-left:0.3rem;"></i></a>\n'
+              '                    <div class="nav-dropdown-menu">\n'
+              f'{items}\n'
+              '                    </div>\n'
+              '                </div>'
+          )
+
+          with open('index.html', 'r') as f:
+              content = f.read()
+
+          new_content = re.sub(
+              r'<div class="nav-dropdown">.*?<\/div>\s*<\/div>\s*<\/div>',
+              replacement,
+              content,
+              flags=re.DOTALL,
+              count=1
+          )
+
+          if new_content != content:
+              with open('index.html', 'w') as f:
+                  f.write(new_content)
+              print(f"Updated navbar with {len(apps)} app(s): {[a.split('/')[1] for a in glob.glob('apps/*/index.html')]}")
+          else:
+              print("No changes needed")
+          EOF
+
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git diff --cached --quiet || git commit -m "Auto-update apps navigation"
+          git push

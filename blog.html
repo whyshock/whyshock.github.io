@@ -59,20 +59,14 @@
             <!-- Blog List View -->
             <div id="blog-list-view">
                 <div class="blog-header">
-                    <h1 class="section-title">
-                        <span class="glitch-text" data-text="TECH INSIGHTS">TECH INSIGHTS</span>
-                    </h1>
                     <p class="blog-subtitle">
-                        Exploring the frontiers of cloud computing, AI, and emerging technologies
+                        A blend of my personal journey and my love for technology — from tech trends and complex challenges to life's lessons.
                     </p>
                 </div>
 
-                <div class="blog-filters">
+                <div class="blog-filters" id="blog-filters">
                     <button class="filter-btn active" data-tag="all">All Posts</button>
-                    <button class="filter-btn" data-tag="AWS">AWS</button>
-                    <button class="filter-btn" data-tag="Machine Learning">ML/AI</button>
-                    <button class="filter-btn" data-tag="Edge Computing">Edge Computing</button>
-                    <button class="filter-btn" data-tag="DevOps">DevOps</button>
+                    <!-- Filter buttons are generated dynamically from blog tags -->
                 </div>
 
                 <div class="blog-grid" id="blog-posts-container">
@@ -97,8 +91,41 @@
                         <i class="fas fa-arrow-left"></i> Back to Blog
                     </button>
                 </div>
+
+                <!-- Reading Toolbar -->
+                <div class="reading-toolbar" id="reading-toolbar">
+                    <div class="toolbar-group">
+                        <span class="toolbar-label">Text</span>
+                        <button class="toolbar-btn" id="font-decrease" title="Decrease text size" aria-label="Decrease text size">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <span class="font-size-display" id="font-size-display">100%</span>
+                        <button class="toolbar-btn" id="font-increase" title="Increase text size" aria-label="Increase text size">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                        <div class="toolbar-divider"></div>
+                        <button class="toolbar-btn" id="font-reset" title="Reset text size" aria-label="Reset text size">
+                            <i class="fas fa-undo"></i>
+                        </button>
+                    </div>
+                    <div class="toolbar-group">
+                        <span class="toolbar-label">Width</span>
+                        <button class="toolbar-btn" id="width-narrow" title="Narrow reading width" aria-label="Narrow reading width">
+                            <i class="fas fa-compress-alt"></i>
+                        </button>
+                        <button class="toolbar-btn active" id="width-normal" title="Normal reading width" aria-label="Normal reading width">
+                            <i class="fas fa-arrows-alt-h"></i>
+                        </button>
+                        <button class="toolbar-btn" id="width-wide" title="Wide reading width" aria-label="Wide reading width">
+                            <i class="fas fa-expand-alt"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Reading Progress Bar -->
+                <div class="reading-progress" id="reading-progress"></div>
                 
-                <article class="blog-post-content">
+                <article class="blog-post-content" id="blog-post-article">
                     <div class="post-meta">
                         <div class="post-date" id="post-date"></div>
                         <div class="post-author" id="post-author"></div>
@@ -130,6 +157,17 @@
                         </div>
                     </div>
                 </article>
+            </div>
+
+            <!-- Image Zoom Overlay -->
+            <div class="image-zoom-overlay" id="image-zoom-overlay">
+                <button class="zoom-close" id="zoom-close" aria-label="Close zoom"><i class="fas fa-times"></i></button>
+                <img id="zoom-image" alt="Zoomed image">
+                <div class="zoom-controls">
+                    <button class="toolbar-btn" id="zoom-out-btn" title="Zoom out" aria-label="Zoom out"><i class="fas fa-search-minus"></i></button>
+                    <button class="toolbar-btn" id="zoom-reset-btn" title="Reset zoom" aria-label="Reset zoom"><i class="fas fa-undo"></i></button>
+                    <button class="toolbar-btn" id="zoom-in-btn" title="Zoom in" aria-label="Zoom in"><i class="fas fa-search-plus"></i></button>
+                </div>
             </div>
         </div>
     </section>

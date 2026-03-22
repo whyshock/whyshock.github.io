@@ -13,6 +13,7 @@ class BlogManager {
 
     async init() {
         await this.loadBlogPosts();
+        this.buildFilterButtons();
         this.setupEventListeners();
         this.renderBlogList();
         this.handleUrlParams();
@@ -20,14 +21,26 @@ class BlogManager {
 
     async loadBlogPosts() {
         try {
-            // List of blog files to load
-            const blogFiles = [
-                'friday-ai-bot-in-mins',
-                'genai-comic-strip-krishna.txt',
-                'gpt-transformers-explained.txt',
-                'parkinsons-law-vs-narayana-murthy.txt',
-                'teen-developer-newspaper-head',
-            ];
+            let blogFiles;
+
+            // Try fetching the auto-generated index first (works on GitHub Pages)
+            try {
+                const indexResponse = await fetch('blogs/index.json');
+                if (indexResponse.ok) {
+                    blogFiles = await indexResponse.json();
+                } else {
+                    throw new Error('index.json not available');
+                }
+            } catch {
+                // Fallback list for local development or if index.json isn't deployed yet
+                blogFiles = [
+                    'friday-ai-bot-in-mins',
+                    'genai-comic-strip-krishna.txt',
+                    'gpt-transformers-explained.txt',
+                    'parkinsons-law-vs-narayana-murthy.txt',
+                    'teen-developer-newspaper-headlines.txt',
+                ];
+            }
 
             const posts = [];
             
@@ -61,6 +74,80 @@ class BlogManager {
             console.error('Error loading blog posts:', error);
             this.showErrorMessage('Failed to load blog posts. Please try again later.');
         }
+    }
+
+    // Category mapping: maps individual tags to broader sections
+    static TAG_TO_CATEGORY = {
+        // AI / ML
+        'ai': 'AI/ML',
+        'artificial intelligence': 'AI/ML',
+        'machine learning': 'AI/ML',
+        'gpt': 'AI/ML',
+        'transformers': 'AI/ML',
+        'llm': 'AI/ML',
+        'deep learning': 'AI/ML',
+        'neural networks': 'AI/ML',
+        'genai': 'AI/ML',
+        'amazon bedrock': 'AI/ML',
+        // Cloud & DevOps
+        'aws': 'Cloud & DevOps',
+        'serverless': 'Cloud & DevOps',
+        'cloudformation': 'Cloud & DevOps',
+        'lambda': 'Cloud & DevOps',
+        'devops': 'Cloud & DevOps',
+        // Creative
+        'creative ai': 'Creative',
+        'comic strip': 'Creative',
+        'digital art': 'Creative',
+        // Productivity
+        'productivity': 'Productivity',
+        'work-life balance': 'Productivity',
+        'time management': 'Productivity',
+        'leadership': 'Productivity',
+        "parkinson's law": 'Productivity',
+        // Stories
+        'teen developer': 'Stories',
+        'entrepreneurship': 'Stories',
+        'community impact': 'Stories',
+        'success story': 'Stories',
+        // Projects
+        'chatbot': 'Projects',
+        'open source': 'Projects',
+        'mobile app development': 'Projects',
+    };
+
+    getCategoriesForPost(post) {
+        const categories = new Set();
+        for (const tag of post.tags) {
+            const cat = BlogManager.TAG_TO_CATEGORY[tag.toLowerCase()];
+            if (cat) categories.add(cat);
+        }
+        // If no category matched, put it in "Other"
+        if (categories.size === 0) categories.add('Other');
+        return [...categories];
+    }
+
+    buildFilterButtons() {
+        // Collect all categories across posts
+        const categorySet = new Set();
+        for (const post of this.blogPosts) {
+            const cats = this.getCategoriesForPost(post);
+            cats.forEach(c => categorySet.add(c));
+        }
+
+        // Desired display order
+        const order = ['AI/ML', 'Cloud & DevOps', 'Creative', 'Productivity', 'Stories', 'Projects', 'Other'];
+        const sorted = order.filter(c => categorySet.has(c));
+
+        const container = document.getElementById('blog-filters');
+        if (!container) return;
+
+        // Keep the "All" button, add category buttons
+        let html = '<button class="filter-btn active" data-tag="all">All Posts</button>';
+        for (const cat of sorted) {
+            html += `<button class="filter-btn" data-tag="${cat}">${cat}</button>`;
+        }
+        container.innerHTML = html;
     }
 
     parseBlogPost(content, filename) {
@@ -170,15 +257,16 @@ class BlogManager {
         document.querySelectorAll('.filter-btn').forEach(btn => {
             btn.classList.remove('active');
         });
-        document.querySelector(`[data-tag="${tag}"]`).classList.add('active');
+        const activeBtn = document.querySelector(`[data-tag="${tag}"]`);
+        if (activeBtn) activeBtn.classList.add('active');
 
-        // Filter posts
+        // Filter posts by category
         this.currentFilter = tag;
         if (tag === 'all') {
             this.filteredPosts = [...this.blogPosts];
         } else {
             this.filteredPosts = this.blogPosts.filter(post => 
-                post.tags.some(postTag => postTag.toLowerCase().includes(tag.toLowerCase()))
+                this.getCategoriesForPost(post).includes(tag)
             );
         }
 
@@ -227,8 +315,13 @@ class BlogManager {
             day: 'numeric'
         });
 
+        const categories = this.getCategoriesForPost(post);
+        const categoryHtml = categories.map(cat => 
+            `<span class="post-tag">${cat}</span>`
+        ).join('');
+
         const tagsHtml = post.tags.slice(0, 3).map(tag => 
-            `<span class="post-tag">${tag}</span>`
+            `<span class="post-tag post-tag-secondary">${tag}</span>`
         ).join('');
 
         return `
@@ -247,6 +340,9 @@ class BlogManager {
                     </div>
                 </div>
                 <div class="blog-card-content">
+                    <div class="blog-card-categories">
+                        ${categoryHtml}
+                    </div>
                     <h3 class="blog-card-title">${post.title}</h3>
                     <p class="blog-card-excerpt">${post.excerpt}</p>
                     <div class="blog-card-tags">
@@ -335,6 +431,20 @@ class BlogManager {
         if (window.Prism) {
             Prism.highlightAll();
         }
+
+        // Setup image zoom on all post images
+        this.setupImageZoom();
+    }
+
+    setupImageZoom() {
+        const postBody = document.getElementById('post-body');
+        const images = postBody.querySelectorAll('img');
+        images.forEach(img => {
+            img.style.cursor = 'zoom-in';
+            img.addEventListener('click', () => {
+                imageZoom.open(img.src, img.alt);
+            });
+        });
     }
 
     showBlogList() {
@@ -421,9 +531,13 @@ function copyPostUrl() {
 
 // Initialize blog manager when DOM is loaded
 let blogManager;
+let readingToolbar;
+let imageZoom;
 
 document.addEventListener('DOMContentLoaded', () => {
     blogManager = new BlogManager();
+    readingToolbar = new ReadingToolbar();
+    imageZoom = new ImageZoom();
 });
 
 // Handle loading screen for blog page
@@ -446,7 +560,6 @@ window.addEventListener('load', () => {
                 loadingScreen.style.opacity = '0';
                 setTimeout(() => {
                     loadingScreen.style.display = 'none';
-                    // Start matrix effect
                     if (typeof startMatrixEffect === 'function') {
                         startMatrixEffect();
                     }
@@ -455,3 +568,172 @@ window.addEventListener('load', () => {
         }
     }, 50);
 });
+
+// ============================================
+// READING TOOLBAR
+// ============================================
+class ReadingToolbar {
+    constructor() {
+        this.fontSize = 100; // percentage
+        this.minFont = 80;
+        this.maxFont = 150;
+        this.step = 10;
+        this.currentWidth = 'normal'; // narrow, normal, wide
+        this.setupControls();
+        this.setupProgressBar();
+    }
+
+    setupControls() {
+        const increase = document.getElementById('font-increase');
+        const decrease = document.getElementById('font-decrease');
+        const reset = document.getElementById('font-reset');
+        const narrow = document.getElementById('width-narrow');
+        const normal = document.getElementById('width-normal');
+        const wide = document.getElementById('width-wide');
+
+        if (increase) increase.addEventListener('click', () => this.changeFontSize(this.step));
+        if (decrease) decrease.addEventListener('click', () => this.changeFontSize(-this.step));
+        if (reset) reset.addEventListener('click', () => this.resetFontSize());
+        if (narrow) narrow.addEventListener('click', () => this.setWidth('narrow'));
+        if (normal) normal.addEventListener('click', () => this.setWidth('normal'));
+        if (wide) wide.addEventListener('click', () => this.setWidth('wide'));
+    }
+
+    changeFontSize(delta) {
+        this.fontSize = Math.min(this.maxFont, Math.max(this.minFont, this.fontSize + delta));
+        this.applyFontSize();
+    }
+
+    resetFontSize() {
+        this.fontSize = 100;
+        this.applyFontSize();
+    }
+
+    applyFontSize() {
+        const postBody = document.getElementById('post-body');
+        if (postBody) {
+            postBody.style.fontSize = (this.fontSize / 100 * 1.05) + 'rem';
+        }
+        const display = document.getElementById('font-size-display');
+        if (display) display.textContent = this.fontSize + '%';
+    }
+
+    setWidth(mode) {
+        this.currentWidth = mode;
+        const article = document.getElementById('blog-post-article');
+        if (!article) return;
+
+        const widths = { narrow: '680px', normal: '860px', wide: '1100px' };
+        article.style.maxWidth = widths[mode];
+
+        // Update active button
+        ['width-narrow', 'width-normal', 'width-wide'].forEach(id => {
+            const btn = document.getElementById(id);
+            if (btn) btn.classList.remove('active');
+        });
+        const activeBtn = document.getElementById('width-' + mode);
+        if (activeBtn) activeBtn.classList.add('active');
+    }
+
+    setupProgressBar() {
+        window.addEventListener('scroll', () => {
+            const postView = document.getElementById('blog-post-view');
+            if (!postView || postView.style.display === 'none') return;
+
+            const progressBar = document.getElementById('reading-progress');
+            if (!progressBar) return;
+
+            const article = document.getElementById('blog-post-article');
+            if (!article) return;
+
+            const rect = article.getBoundingClientRect();
+            const articleTop = rect.top + window.scrollY;
+            const articleHeight = article.offsetHeight;
+            const scrolled = window.scrollY - articleTop;
+            const viewportHeight = window.innerHeight;
+            const progress = Math.min(100, Math.max(0, (scrolled / (articleHeight - viewportHeight)) * 100));
+
+            progressBar.style.width = progress + '%';
+        });
+    }
+}
+
+// ============================================
+// IMAGE ZOOM
+// ============================================
+class ImageZoom {
+    constructor() {
+        this.overlay = document.getElementById('image-zoom-overlay');
+        this.zoomImg = document.getElementById('zoom-image');
+        this.scale = 1;
+        this.minScale = 0.5;
+        this.maxScale = 3;
+        this.setupControls();
+    }
+
+    setupControls() {
+        const closeBtn = document.getElementById('zoom-close');
+        const zoomIn = document.getElementById('zoom-in-btn');
+        const zoomOut = document.getElementById('zoom-out-btn');
+        const zoomReset = document.getElementById('zoom-reset-btn');
+
+        if (closeBtn) closeBtn.addEventListener('click', () => this.close());
+        if (zoomIn) zoomIn.addEventListener('click', (e) => { e.stopPropagation(); this.zoom(0.25); });
+        if (zoomOut) zoomOut.addEventListener('click', (e) => { e.stopPropagation(); this.zoom(-0.25); });
+        if (zoomReset) zoomReset.addEventListener('click', (e) => { e.stopPropagation(); this.resetZoom(); });
+
+        if (this.overlay) {
+            this.overlay.addEventListener('click', (e) => {
+                if (e.target === this.overlay) this.close();
+            });
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (!this.overlay || !this.overlay.classList.contains('active')) return;
+            if (e.key === 'Escape') this.close();
+            if (e.key === '+' || e.key === '=') this.zoom(0.25);
+            if (e.key === '-') this.zoom(-0.25);
+        });
+    }
+
+    open(src, alt) {
+        if (!this.overlay || !this.zoomImg) return;
+        this.scale = 1;
+        this.zoomImg.src = src;
+        this.zoomImg.alt = alt || '';
+        this.zoomImg.style.transform = 'scale(1)';
+        this.overlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    close() {
+        if (!this.overlay) return;
+        this.overlay.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    zoom(delta) {
+        this.scale = Math.min(this.maxScale, Math.max(this.minScale, this.scale + delta));
+        if (this.zoomImg) this.zoomImg.style.transform = `scale(${this.scale})`;
+    }
+
+    resetZoom() {
+        this.scale = 1;
+        if (this.zoomImg) this.zoomImg.style.transform = 'scale(1)';
+    }
+}
+
+// ============================================
+// NOTIFICATION HELPER
+// ============================================
+function showNotification(message) {
+    let toast = document.querySelector('.notification-toast');
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.className = 'notification-toast';
+        document.body.appendChild(toast);
+    }
+    toast.textContent = message;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2500);
+}

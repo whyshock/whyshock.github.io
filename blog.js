@@ -406,7 +406,6 @@ class BlogManager {
 
         // Update meta information
         document.getElementById('post-date').innerHTML = `<i class="fas fa-calendar"></i> ${formattedDate}`;
-        document.getElementById('post-author').innerHTML = `<i class="fas fa-user"></i> ${post.author}`;
         
         const tagsHtml = post.tags.map(tag => `<span class="post-tag">${tag}</span>`).join('');
         document.getElementById('post-tags').innerHTML = tagsHtml;
@@ -504,7 +503,7 @@ function sharePost(platform) {
             shareUrl = `https://twitter.com/intent/tweet?url=${url}&text=${title}&via=whyshock`;
             break;
         case 'linkedin':
-            shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${url}`;
+            shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${url}&title=${title}&summary=${text}`;
             break;
         default:
             return;

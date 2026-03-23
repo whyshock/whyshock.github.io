@@ -1,5 +1,6 @@
 TITLE: Deploy a Perplexity-Like AI Chat Interface with Web Search, Voice Input, and Multi-Model Selection on AWS — In Minutes
 DATE: 2026-03-22
+AUTHOR: Vaishakh Kuppast
 TAGS: AWS, Serverless, AI, Amazon Bedrock, CloudFormation, Lambda, Chatbot, Claude, Web Search, Voice Input, Open Source
 IMAGE: blogs/images/friday-ui-screenshot.png
 
@@ -40,52 +41,7 @@ Everything you see here — the avatars, the glitch effects, the particle canvas
 
 FRIDAY runs entirely on AWS serverless services. There are no EC2 instances, no containers, no servers to patch or scale. Here's the high-level architecture:
 
-```
-┌──────────────────────────────────────────────────────────────────────┐
-│                            BROWSER                                   │
-│   index.html + app.js + style.css                                   │
-│   Vanilla JS · marked.js · highlight.js · KaTeX                     │
-│   localStorage for conversation history                              │
-│   Web Speech API (voice input)                                       │
-└──────────┬───────────────────────────────────────┬───────────────────┘
-           │ HTTPS                                 │ PUT (presigned)
-           ▼                                       │
-┌──────────────────────────────────────────────┐   │
-│              CLOUDFRONT (CDN)                │   │
-│   /*       → S3 Origin (static files)        │   │
-│   /api/*   → API Gateway Origin (Lambda)     │   │
-│   HTTP/2 · HTTPS enforced · gzip/brotli      │   │
-└──────┬──────────────────────┬────────────────┘   │
-       │                      │                    │
-       ▼                      ▼                    │
-┌──────────────┐   ┌──────────────────────┐        │
-│  S3 BUCKET   │   │  API GATEWAY (HTTP)  │        │
-│  (Website)   │   │  POST /api/chat      │        │
-│  Private     │   │  POST /api/poll      │        │
-│  OAC         │   │  POST /api/upload-url│        │
-│              │   │  GET  /api/health    │        │
-└──────────────┘   └──────────┬───────────┘        │
-                              │                    │
-                              ▼                    │
-                ┌──────────────────────────┐       │
-                │     LAMBDA FUNCTION      │       │
-                │     Node.js 20.x         │       │
-                │     2 GB RAM · 5 min     │       │
-                └──┬───────┬───────┬───┬───┘       │
-                   │       │       │   │           │
-     ┌─────────────▼┐ ┌───▼────┐ ┌▼───▼───────────▼──┐
-     │  DynamoDB     │ │Bedrock │ │ S3 Bucket          │
-     │  Streaming    │ │Claude  │ │ (Attachments)      │
-     │  state store  │ │Nova    │ │ 24h lifecycle      │
-     │  30-min TTL   │ │Custom  │ │ AES-256            │
-     └──────────────┘ └────────┘ └────────────────────┘
-                   │
-     ┌─────────────▼──────────────────────┐
-     │        EXTERNAL SEARCH             │
-     │  DuckDuckGo (default, no API key)  │
-     │  Brave Search (optional, API key)  │
-     └────────────────────────────────────┘
-```
+![FRIDAY System Architecture](blogs/diagrams/1-system-architecture.svg)
 
 Seven AWS services work together, each chosen for a specific reason:
 
@@ -105,6 +61,8 @@ One of the features I'm most excited about is web search integration. When you e
 
 FRIDAY uses a two-tier search strategy:
 
+![Web Search Flow](blogs/diagrams/6-web-search-flow.svg)
+
 - **DuckDuckGo** (default) — No API key needed. Uses the DuckDuckGo HTML lite endpoint, parses the results page, and extracts titles, URLs, and snippets. Works out of the box with zero configuration.
 - **Brave Search API** (optional upgrade) — If you provide a Brave API key in the CONFIG settings panel, FRIDAY uses it for richer, more structured results. If Brave fails, it falls through to DuckDuckGo automatically.
 
@@ -122,31 +80,7 @@ Here's the core engineering challenge I had to solve: API Gateway has a hard 30-
 
 FRIDAY solves this with what I call a "fire-and-poll" pattern:
 
-```
- BROWSER                    LAMBDA                    DYNAMODB         BEDROCK
-    │                          │                          │               │
-    │  POST /api/chat          │                          │               │
-    │─────────────────────────►│                          │               │
-    │                          │  PutItem(PENDING)        │               │
-    │                          │─────────────────────────►│               │
-    │  { conversationId }      │                          │               │
-    │◄─────────────────────────│  (kicks off async)       │               │
-    │                          │  [web search if enabled] │               │
-    │                          │──────────────────────────┼──────────────►│
-    │                          │                          │    Stream     │
-    │  POST /api/poll (300ms)  │                          │               │
-    │─────────────────────────►│  GetItem                 │◄──── chunk ───│
-    │  { partial content }     │◄─────────────────────────│               │
-    │◄─────────────────────────│  UpdateItem (300ms)      │◄──── chunk ───│
-    │         ...              │         ...              │      ...      │
-    │                          │                          │               │
-    │  POST /api/poll          │  UpdateItem(COMPLETE)    │◄──── done ────│
-    │─────────────────────────►│─────────────────────────►│               │
-    │  { status: COMPLETE,     │                          │               │
-    │    sources, searchQuery }│                          │               │
-    │◄─────────────────────────│                          │               │
-    │  Stop polling ✓          │                          │               │
-```
+![File Upload & Chat Sequence](blogs/diagrams/2-upload-sequence.svg)
 
 Here's the step-by-step:
 
@@ -164,6 +98,8 @@ This pattern means responses of any length are supported. The UI never freezes. 
 
 FRIDAY supports uploading files up to 100 MB each, with up to 5 files per message — 35+ file types in total. The browser uploads directly to S3 using a presigned PUT URL, bypassing API Gateway's 10 MB payload limit.
 
+![File Processing Pipeline](blogs/diagrams/4-file-processing.svg)
+
 | File type | Processing strategy | Dependency |
 |-----------|-------------------|------------|
 | Text files (TXT, MD, CSV, JSON, XML, YAML, HTML, code, logs) | Read as UTF-8 | None |
@@ -175,7 +111,11 @@ FRIDAY supports uploading files up to 100 MB each, with up to 5 files per messag
 
 ## Smart Summary — reducing token costs by up to 90%
 
-When you enable the "Smart" toggle, FRIDAY pre-processes large files through Amazon Nova Micro ($0.035/1M input tokens) before sending to your chosen model. Files under 2,000 characters are skipped. If summarization fails, the raw text is used instead.
+When you enable the "Smart" toggle, FRIDAY pre-processes large files through Amazon Nova Micro ($0.035/1M input tokens) before sending to your chosen model.
+
+![Smart Summary Flow](blogs/diagrams/5-smart-summary.svg)
+
+Files under 2,000 characters are skipped. If summarization fails, the raw text is used instead.
 
 | File | Raw characters | After summary | Reduction |
 |------|---------------|---------------|-----------|

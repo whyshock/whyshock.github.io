@@ -1,5 +1,8 @@
-TITLE: What Happens Between Your Question and ChatGPT's Answer DATE: 2024-11-15 TAGS: AI, Machine Learning, GPT, Transformers, LLM, Deep Learning, Neural Networks IMAGE:https://github.com/user-attachments/assets/1d7daa56-701b-4036-ba5c-486671db8240
-
+TITLE: Deploy a Perplexity-Like AI Chat Interface with Multi-Model Selection on AWS — In Minutes
+DATE: 2026-03-22
+AUTHOR: Vaishakh Kuppast
+TAGS: AWS, Serverless, AI, Amazon Bedrock, CloudFormation, Lambda, Chatbot, Claude, Open Source
+IMAGE: blogs/images/friday-ui-screenshot.png
 
 # Deploy a Perplexity-Like AI Chat Interface with Web Search, Voice Input, and Multi-Model Selection on AWS — In Minutes
 

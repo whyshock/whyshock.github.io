@@ -5,7 +5,7 @@
 /* Blog Section */
 .blog-section {
     min-height: 100vh;
-    padding: 4rem 0 2rem;
+    padding: 6rem 0 2rem;
     position: relative;
     background: var(--bg-primary);
 }
@@ -1001,7 +1001,7 @@
    ============================================ */
 @media (max-width: 768px) {
     .blog-section {
-        padding: 4rem 0 2rem;
+        padding: 6rem 0 2rem;
     }
 
     .blog-grid {

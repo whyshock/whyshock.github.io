@@ -35,7 +35,6 @@ class BlogManager {
                 // Fallback list for local development or if index.json isn't deployed yet
                 blogFiles = [
                     'friday-ai-bot-in-mins.md',
-                    'genai-comic-strip-krishna.md',
                     'gpt-transformers-explained.md',
                     'parkinsons-law-vs-narayana-murthy.md',
                     'teen-developer-newspaper-headlines.md',

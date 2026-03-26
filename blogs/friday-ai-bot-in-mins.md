@@ -1,7 +1,11 @@
 TITLE: Deploy a Perplexity-Like AI Chat Interface with Multi-Model Selection on AWS — In Minutes
+
 DATE: 2026-03-22
+
 AUTHOR: Vaishakh Kuppast
+
 TAGS: AWS, Serverless, AI, Amazon Bedrock, CloudFormation, Lambda, Chatbot, Claude, Open Source
+
 IMAGE: blogs/images/friday-ui-screenshot.png
 
 # Deploy a Perplexity-Like AI Chat Interface with Web Search, Voice Input, and Multi-Model Selection on AWS — In Minutes

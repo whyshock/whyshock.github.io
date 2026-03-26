@@ -4,7 +4,7 @@ AUTHOR: Vaishakh Kuppast
 TAGS: AWS, Serverless, AI, Amazon Bedrock, CloudFormation, Lambda, Chatbot, Claude, Open Source
 IMAGE: blogs/images/friday-ui-screenshot.png
 
-# Deploy a Perplexity-Like AI Chat Interface with Multi-Model Selection on AWS — In Minutes
+# Deploy a Perplexity-Like AI Chat Interface with Multi-Model Selection on AWS — In Minutes 
 
 Today, I'm sharing **FRIDAY**, an open-source, fully serverless AI chatbot that you can deploy to your own AWS account in under 10 minutes. It gives you a Perplexity-style chat interface with access to 20+ AI models — Anthropic Claude 4.x, 3.7, 3.5, Amazon Nova, and any custom Amazon Bedrock model ID — all from a single dropdown. No API keys, no SaaS subscriptions, no servers to manage.
 

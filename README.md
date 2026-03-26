@@ -4,8 +4,6 @@ A cyberpunk-themed personal portfolio and blog platform built with vanilla HTML,
 
 **Live:** [whyshock.github.io](https://whyshock.github.io)
 
-![Portfolio Preview](img/me.jpg)
-
 ---
 
 ## What's Inside

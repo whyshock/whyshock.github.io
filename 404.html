@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Page Not Found | WhyShock</title>
+    <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .error-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .error-content {
+            text-align: center;
+            z-index: 10;
+            padding: 2rem;
+        }
+        .error-code {
+            font-family: 'Orbitron', monospace;
+            font-size: clamp(6rem, 20vw, 12rem);
+            font-weight: 900;
+            line-height: 1;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: none;
+            filter: drop-shadow(0 0 30px rgba(59, 130, 246, 0.3));
+        }
+        .error-message {
+            font-family: 'Orbitron', monospace;
+            font-size: clamp(1rem, 3vw, 1.5rem);
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+        .error-description {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 2.5rem;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            opacity: 0.7;
+        }
+        .error-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .error-buttons .btn {
+            font-size: 0.85rem;
+        }
+        .error-terminal {
+            font-family: 'Rajdhani', monospace;
+            font-size: 0.9rem;
+            color: var(--accent-primary);
+            opacity: 0.5;
+            margin-top: 3rem;
+            letter-spacing: 1px;
+        }
+        .error-terminal span {
+            animation: blink 1s step-end infinite;
+        }
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+    </style>
+</head>
+<body class="dark-theme">
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="index.html" style="text-decoration: none; color: inherit;">
+                    <span class="glitch-text" data-text="WHYSHOCK">WHYSHOCK</span>
+                </a>
+            </div>
+            <div class="nav-menu">
+                <a href="index.html" class="nav-link">HOME</a>
+                <a href="index.html#about" class="nav-link">ABOUT</a>
+                <a href="index.html#projects" class="nav-link">PROJECTS</a>
+                <a href="blog.html" class="nav-link">BLOG</a>
+                <a href="index.html#contact" class="nav-link">CONTACT</a>
+            </div>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <section class="error-section">
+        <div class="hero-background">
+            <div class="cyber-grid"></div>
+        </div>
+        <div class="error-content">
+            <div class="error-code">
+                <span class="glitch-text" data-text="404">404</span>
+            </div>
+            <p class="error-message">Signal Lost</p>
+            <p class="error-description">
+                The page you're looking for has drifted into the void. It may have been moved, deleted, or never existed.
+            </p>
+            <div class="error-buttons">
+                <a href="index.html" class="btn btn-primary">
+                    <i class="fas fa-home"></i> Go Home
+                </a>
+                <a href="blog.html" class="btn btn-secondary">
+                    <i class="fas fa-book-open"></i> Read Blog
+                </a>
+            </div>
+            <div class="error-terminal">
+                > connection_refused: route_not_found<span>_</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Floating Theme Toggle -->
+    <button id="theme-toggle" class="floating-theme-toggle">
+        <i class="fas fa-sun"></i>
+    </button>
+
+    <script src="script.js"></script>
+</body>
+</html>

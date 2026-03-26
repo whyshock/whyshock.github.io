@@ -34,11 +34,11 @@ class BlogManager {
             } catch {
                 // Fallback list for local development or if index.json isn't deployed yet
                 blogFiles = [
-                    'friday-ai-bot-in-mins',
-                    'genai-comic-strip-krishna.txt',
-                    'gpt-transformers-explained.txt',
-                    'parkinsons-law-vs-narayana-murthy.txt',
-                    'teen-developer-newspaper-headlines.txt',
+                    'friday-ai-bot-in-mins.md',
+                    'genai-comic-strip-krishna.md',
+                    'gpt-transformers-explained.md',
+                    'parkinsons-law-vs-narayana-murthy.md',
+                    'teen-developer-newspaper-headlines.md',
                 ];
             }
 
@@ -179,7 +179,7 @@ class BlogManager {
             const excerpt = this.generateExcerpt(markdownContent);
             
             // Generate slug from filename
-            const slug = filename.replace('.txt', '');
+            const slug = filename.replace(/\.(md|txt)$/, '');
 
             return {
                 slug,
@@ -334,9 +334,6 @@ class BlogManager {
                         <span class="blog-date">
                             <i class="fas fa-calendar"></i> ${formattedDate}
                         </span>
-                        <span class="blog-author">
-                            <i class="fas fa-user"></i> ${post.author}
-                        </span>
                     </div>
                 </div>
                 <div class="blog-card-content">
@@ -388,6 +385,9 @@ class BlogManager {
 
         // Render post content
         await this.renderBlogPost(post);
+
+        // Render sidebar
+        this.renderSidebar(slug);
         
         // Show post view
         document.getElementById('blog-list-view').style.display = 'none';
@@ -395,6 +395,69 @@ class BlogManager {
         
         // Scroll to top
         window.scrollTo(0, 0);
+    }
+
+    renderSidebar(activeSlug) {
+        const container = document.getElementById('sidebar-posts-list');
+        if (!container) return;
+
+        const renderList = (filter = '') => {
+            const lowerFilter = filter.toLowerCase();
+            const filtered = this.blogPosts.filter(p =>
+                !filter || p.title.toLowerCase().includes(lowerFilter)
+            );
+
+            // Group by year
+            const byYear = {};
+            for (const p of filtered) {
+                const year = new Date(p.date).getFullYear();
+                if (!byYear[year]) byYear[year] = [];
+                byYear[year].push(p);
+            }
+
+            const years = Object.keys(byYear).sort((a, b) => b - a);
+
+            if (years.length === 0) {
+                container.innerHTML = '<div class="sidebar-no-results">No posts found</div>';
+                return;
+            }
+
+            let html = '';
+            for (const year of years) {
+                html += `<div class="sidebar-year">${year}</div>`;
+                for (const p of byYear[year]) {
+                    const activeClass = p.slug === activeSlug ? ' active' : '';
+                    html += `<a class="sidebar-post-link${activeClass}" data-slug="${p.slug}">${p.title}</a>`;
+                }
+            }
+            container.innerHTML = html;
+
+            // Click handlers
+            container.querySelectorAll('.sidebar-post-link').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    this.showBlogPost(link.dataset.slug);
+                });
+            });
+        };
+
+        renderList();
+
+        // Search
+        const searchInput = document.getElementById('sidebar-search-input');
+        if (searchInput) {
+            searchInput.value = '';
+            searchInput.oninput = () => renderList(searchInput.value);
+        }
+
+        // "All posts" link
+        const backLink = document.getElementById('sidebar-back-to-list');
+        if (backLink) {
+            backLink.onclick = (e) => {
+                e.preventDefault();
+                this.showBlogList();
+            };
+        }
     }
 
     async renderBlogPost(post) {

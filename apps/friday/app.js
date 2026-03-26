@@ -90,42 +90,6 @@ function init() {
   });
 
   focusInput();
-  // Auto-show demo greeting on first load
-  showDemoGreeting();
-}
-
-function showDemoGreeting() {
-  if (state.conversations.length > 0) return;
-  const conv = { id: generateId(), title: 'Welcome to FRIDAY', messages: [], createdAt: Date.now(), updatedAt: Date.now() };
-  const greeting = `Beep boop 🤖 I am **FRIDAY** — your cyberpunk AI assistant.
-
-This is a **demo instance** showcasing the UI. The full version runs on AWS serverless with:
-
-- 🧠 **20+ AI models** (Claude 4.x, 3.7, 3.5, Amazon Nova)
-- 🔍 **Web search** with citations (DuckDuckGo + Brave)
-- 🎤 **Voice input** via Web Speech API
-- 📎 **File attachments** up to 100 MB (PDFs, Office docs, code, images)
-- 💡 **Extended thinking** with visible reasoning chains
-- 🌿 **Conversation branching**
-- 💰 **Live session cost tracking**
-
-**Want to deploy FRIDAY to your own AWS account?**
-
-📧 Contact **i@whyshock.com** to get the deployment scripts and source code.
-
-– FRIDAY out. 🔷`;
-
-  conv.messages.push({
-    role: 'assistant',
-    content: greeting,
-    timestamp: Date.now(),
-    usage: { inputTokens: 0, outputTokens: 0, totalTokens: 0 }
-  });
-  state.conversations.push(conv);
-  state.activeConvId = conv.id;
-  saveConversations();
-  renderConvList();
-  renderMessages(conv.messages, conv);
 }
 
 function focusInput() {
@@ -393,11 +357,18 @@ function loadSidebarState() {
 }
 
 async function checkServerStatus() {
-  // Demo mode: always online
   const dot = document.getElementById('statusDot');
   const txt = document.getElementById('statusText');
-  dot.className = 'status-dot online';
-  txt.textContent = 'Demo Mode';
+  try {
+    const r = await fetch('/api/health');
+    if (r.ok) {
+      dot.className = 'status-dot online';
+      txt.textContent = 'Online';
+    } else throw new Error();
+  } catch {
+    dot.className = 'status-dot offline';
+    txt.textContent = 'Offline';
+  }
 }
 
 // ==================== CONVERSATIONS ====================
@@ -656,9 +627,54 @@ function handlePaste(event) {
 }
 
 async function uploadFile(attachment) {
-  // Demo mode: uploads disabled
-  showToast('File uploads are disabled in demo mode. Contact i@whyshock.com for the full version.');
-  removeAttachment(state.attachments.indexOf(attachment));
+  try {
+    // Get presigned URL
+    const res = await fetch('/api/upload-url', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        fileName: attachment.fileName,
+        mimeType: attachment.mimeType,
+        fileSize: attachment.fileSize
+      })
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || `HTTP ${res.status}`);
+    }
+    const { uploadUrl, s3Key } = await res.json();
+    attachment.s3Key = s3Key;
+
+    // Upload via XHR for progress tracking
+    await new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      attachment.xhr = xhr;
+      xhr.open('PUT', uploadUrl);
+      xhr.setRequestHeader('Content-Type', attachment.mimeType);
+      xhr.upload.onprogress = (e) => {
+        if (e.lengthComputable) {
+          attachment.uploadProgress = Math.round((e.loaded / e.total) * 100);
+          renderAttachments();
+        }
+      };
+      xhr.onload = () => {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          attachment.status = 'uploaded';
+          attachment.uploadProgress = 100;
+          resolve();
+        } else {
+          reject(new Error(`Upload failed: ${xhr.status}`));
+        }
+      };
+      xhr.onerror = () => reject(new Error('Upload failed'));
+      xhr.send(attachment.file);
+    });
+  } catch (err) {
+    attachment.status = 'error';
+    attachment.errorMessage = err.message;
+  }
+  renderAttachments();
+  updateSendButton();
 }
 
 function retryUpload(index) {
@@ -1405,13 +1421,49 @@ async function sendMessage() {
     messages = conv.messages;
   }
 
-  const userMsg = { role: 'user', content: text, timestamp: Date.now() };
+  // Build user message
+  const userMsg = {
+    role: 'user',
+    content: text,
+    timestamp: Date.now()
+  };
+
+  // Handle image attachments for inline display
+  const imageAttachments = uploadedAttachments.filter(a => a.mimeType.startsWith('image/'));
+  if (imageAttachments.length > 0) {
+    userMsg.images = [];
+    for (const att of imageAttachments) {
+      if (att.file) {
+        try {
+          const dataUrl = await new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onload = (e) => resolve(e.target.result);
+            reader.readAsDataURL(att.file);
+          });
+          userMsg.images.push(dataUrl);
+        } catch(e) {}
+      }
+    }
+  }
+
+  // Store attachment metadata in message
+  if (uploadedAttachments.length > 0) {
+    userMsg.attachments = uploadedAttachments.map(a => ({
+      s3Key: a.s3Key,
+      fileName: a.fileName,
+      mimeType: a.mimeType,
+      fileSize: a.fileSize
+    }));
+  }
+
+  // Clear attachments
   state.attachments = [];
   renderAttachments();
-  messages.push(userMsg);
 
+  messages.push(userMsg);
   const assistantMsg = { role: 'assistant', content: '', thinking: '', loading: true, timestamp: Date.now() };
   messages.push(assistantMsg);
+
   renderMessages(messages, conv);
   renderConvList();
 
@@ -1419,8 +1471,10 @@ async function sendMessage() {
   document.getElementById('sendBtn').style.display = 'none';
   document.getElementById('stopBtn').style.display = 'inline-flex';
   document.getElementById('input').disabled = true;
+  // Hide mic during processing
   const micBtn = document.getElementById('micBtn');
   if (micBtn) micBtn.style.display = 'none';
+  // Stop voice if active
   if (state.voice && state.voice.status !== 'idle') {
     state.voice.recognition.stop();
     state.voice.status = 'idle';
@@ -1428,38 +1482,100 @@ async function sendMessage() {
   }
   setFridayProcessing(true);
 
-  // === DEMO MODE: Fake streaming response ===
-  const demoResponse = `Beep boop 🤖 I am **FRIDAY** — your cyberpunk AI assistant.
+  try {
+    // Build API messages
+    const apiMessages = messages.slice(0, -1).map(m => {
+      let content = m.content;
+      if (m.images && m.images.length > 0) {
+        for (const img of m.images) {
+          const base64Data = img.split(',')[1];
+          content += `\n<diya_image_file>\n${base64Data}\n</diya_image_file>`;
+        }
+      }
+      return { role: m.role, content };
+    });
 
-This is a **demo instance**. The full version runs on AWS serverless with 20+ AI models, web search, voice input, file attachments, and more.
+    const advP = settings.advancedParams;
+    const modelInferenceParams = advP ? {
+      temperature: advP.temperature,
+      top_p: advP.top_p,
+      ...(advP.top_k ? { top_k: advP.top_k } : {})
+    } : undefined;
 
-**Want to deploy FRIDAY to your own AWS account?**
+    const chatBody = {
+      messages: apiMessages,
+      model: settings.customModelId || settings.model || 'us.anthropic.claude-3-5-sonnet-20241022-v2:0',
+      systemContext: settings.systemContext || undefined,
+      enableThinking: settings.enableThinking || false,
+      smartSummary: settings.smartSummary || false,
+      webSearch: settings.webSearch || false,
+      braveApiKey: settings.braveApiKey || undefined,
+      responseStyle: settings.responseStyle || 'precise',
+      modelInferenceParams,
+      maxTokens: advP?.maxTokens || 4096
+    };
 
-📧 Contact **i@whyshock.com** to get the deployment scripts and source code.
+    // Include file attachments
+    if (userMsg.attachments && userMsg.attachments.length > 0) {
+      chatBody.attachments = userMsg.attachments;
+    }
 
-– FRIDAY out. 🔷`;
+    const startResponse = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(chatBody)
+    });
 
-  const words = demoResponse.split(' ');
-  for (let i = 0; i < words.length && state.isLoading; i++) {
-    assistantMsg.content = words.slice(0, i + 1).join(' ');
+    if (!startResponse.ok) {
+      const errorData = await startResponse.json().catch(() => ({}));
+      throw new Error(errorData.error || `HTTP ${startResponse.status}`);
+    }
+
+    const { conversationId } = await startResponse.json();
+
+    // Poll for updates
+    let polling = true;
+    while (polling && state.isLoading) {
+      await new Promise(r => setTimeout(r, 300));
+      const pollResponse = await fetch('/api/poll', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ conversationId })
+      });
+      if (!pollResponse.ok) continue;
+      const pollData = await pollResponse.json();
+      assistantMsg.content = pollData.content || '';
+      assistantMsg.thinking = pollData.thinking || '';
+      if (pollData.sources) assistantMsg.sources = pollData.sources;
+      if (pollData.searchQuery) assistantMsg.searchQuery = pollData.searchQuery;
+      renderMessages(messages, conv);
+      if (pollData.status === 'COMPLETE') {
+        if (pollData.usage) assistantMsg.usage = pollData.usage;
+        if (pollData.sources) assistantMsg.sources = pollData.sources;
+        if (pollData.searchQuery) assistantMsg.searchQuery = pollData.searchQuery;
+        polling = false;
+      } else if (pollData.status === 'ERROR') {
+        polling = false;
+      }
+    }
+  } catch (err) {
+    console.error('API error:', err);
+    assistantMsg.content = `Error: ${err.message}`;
+  } finally {
+    assistantMsg.loading = false;
+    state.isLoading = false;
+    document.getElementById('sendBtn').style.display = 'inline-flex';
+    document.getElementById('stopBtn').style.display = 'none';
+    document.getElementById('input').disabled = false;
+    document.getElementById('input').focus();
+    setFridayProcessing(false);
+    // Restore mic button
+    updateMicButtonState();
+    conv.updatedAt = Date.now();
+    saveConversations();
     renderMessages(messages, conv);
-    await new Promise(r => setTimeout(r, 40));
+    renderConvList();
   }
-
-  assistantMsg.content = demoResponse;
-  assistantMsg.usage = { inputTokens: 12, outputTokens: 48, totalTokens: 60 };
-  assistantMsg.loading = false;
-  state.isLoading = false;
-  document.getElementById('sendBtn').style.display = 'inline-flex';
-  document.getElementById('stopBtn').style.display = 'none';
-  document.getElementById('input').disabled = false;
-  document.getElementById('input').focus();
-  setFridayProcessing(false);
-  updateMicButtonState();
-  conv.updatedAt = Date.now();
-  saveConversations();
-  renderMessages(messages, conv);
-  renderConvList();
 }
 // ==================== PARTICLE CANVAS ====================
 function initParticleCanvas() {

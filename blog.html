@@ -61,7 +61,7 @@
             <div id="blog-list-view">
                 <div class="blog-header">
                     <p class="blog-subtitle">
-                        A blend of my personal journey and my love for technology — from tech trends and complex challenges to life's lessons.
+                        Tech, life, and everything in between.
                     </p>
                 </div>
 
@@ -125,8 +125,24 @@
 
                 <!-- Reading Progress Bar -->
                 <div class="reading-progress" id="reading-progress"></div>
-                
-                <article class="blog-post-content" id="blog-post-article">
+
+                <div class="blog-post-layout">
+                    <!-- Sidebar: All Posts Navigation -->
+                    <aside class="blog-sidebar" id="blog-sidebar">
+                        <div class="sidebar-header">
+                            <a href="#" class="sidebar-all-posts" id="sidebar-back-to-list">All posts</a>
+                        </div>
+                        <div class="sidebar-search">
+                            <input type="text" id="sidebar-search-input" placeholder="Search posts..." aria-label="Search blog posts">
+                        </div>
+                        <nav class="sidebar-posts-list" id="sidebar-posts-list">
+                            <!-- Populated by JS -->
+                        </nav>
+                    </aside>
+
+                    <!-- Main Post Content -->
+                    <div class="blog-post-main">
+                        <article class="blog-post-content" id="blog-post-article">
                     <div class="post-meta">
                         <div class="post-date" id="post-date"></div>
                         <div class="post-tags" id="post-tags"></div>
@@ -157,6 +173,8 @@
                         </div>
                     </div>
                 </article>
+                    </div><!-- .blog-post-main -->
+                </div><!-- .blog-post-layout -->
             </div>
 
             <!-- Image Zoom Overlay -->

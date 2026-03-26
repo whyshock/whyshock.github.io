@@ -13,7 +13,11 @@ As someone who has been juggling between multiple AI chat subscriptions — each
 
 Here's what the interface looks like when you're chatting with Claude Opus 4.5 with extended thinking enabled:
 
-![FRIDAY chat interface showing a conversation with Claude Opus 4.5](friday-ui-screenshot.png)
+![FRIDAY chat interface showing a conversation with Claude Opus 4.5](blogs/images/friday-ui-screenshot.png)
+
+Here is the bot in action!:
+<video src="https://github.com/user-attachments/assets/8d2e8742-8897-4064-9de3-5d8a0a63103a" controls title="Video Title" style="max-width: 100%;">
+</video>
 
 Let me walk you through what you're seeing in this screenshot.
 

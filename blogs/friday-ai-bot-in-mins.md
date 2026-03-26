@@ -1,3 +1,6 @@
+TITLE: What Happens Between Your Question and ChatGPT's Answer DATE: 2024-11-15 TAGS: AI, Machine Learning, GPT, Transformers, LLM, Deep Learning, Neural Networks IMAGE:https://github.com/user-attachments/assets/1d7daa56-701b-4036-ba5c-486671db8240
+
+
 # Deploy a Perplexity-Like AI Chat Interface with Web Search, Voice Input, and Multi-Model Selection on AWS — In Minutes
 
 > 🔗 **Try the live demo:** [www.whyshock.com/apps/friday](http://www.whyshock.com/apps/friday/index.html)

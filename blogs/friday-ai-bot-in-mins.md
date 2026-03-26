@@ -43,7 +43,7 @@ Everything you see here — the avatars, the glitch effects, the particle canvas
 
 FRIDAY runs entirely on AWS serverless services. There are no EC2 instances, no containers, no servers to patch or scale. Here's the high-level architecture:
 
-![FRIDAY System Architecture](blogs/diagrams1-system-architecture.svg)
+![FRIDAY System Architecture](blogs/diagrams/1-system-architecture.svg)
 
 Seven AWS services work together, each chosen for a specific reason:
 
@@ -63,7 +63,7 @@ One of the features I'm most excited about is web search integration. When you e
 
 Here's how it works under the hood:
 
-![Web Search Flow](blogs/diagrams6-web-search-flow.svg)
+![Web Search Flow](blogs/diagrams/6-web-search-flow.svg)
 
 FRIDAY uses a two-tier search strategy:
 
@@ -90,7 +90,7 @@ Here's the core engineering challenge I had to solve: API Gateway has a hard 30-
 
 FRIDAY solves this with what I call a "fire-and-poll" pattern:
 
-![File Upload & Chat Sequence](blogs/diagrams2-upload-sequence.svg)
+![File Upload & Chat Sequence](blogs/diagrams/2-upload-sequence.svg)
 
 Here's the step-by-step flow:
 
@@ -110,7 +110,7 @@ FRIDAY supports uploading files up to 100 MB each, with up to 5 files per messag
 
 The challenge here is that API Gateway has a 10 MB payload limit. To support 100 MB files, the browser uploads directly to S3 using a presigned PUT URL. The file never touches API Gateway or Lambda during upload. Here's how the flow works:
 
-![File Processing Pipeline](blogs/diagrams4-file-processing.svg)
+![File Processing Pipeline](blogs/diagrams/4-file-processing.svg)
 
 When the user selects a file, the frontend first validates the file type and size client-side. It then requests a presigned URL from the Lambda, which validates again server-side (defense in depth). The browser uploads the file directly to S3 using an XMLHttpRequest with progress tracking — you see a neon cyan progress bar filling up in real time.
 
@@ -142,7 +142,7 @@ One of the design decisions I'm most pleased with is the Smart Summary feature. 
 
 When you enable the "Smart" toggle below the textarea, FRIDAY pre-processes large files through Amazon Nova Micro (the cheapest Bedrock model at $0.035 per million input tokens) before sending to your chosen model.
 
-![Smart Summary Flow](blogs/diagrams5-smart-summary.svg)
+![Smart Summary Flow](blogs/diagrams/5-smart-summary.svg)
 
 Nova Micro receives the file content along with your question, so it knows what's relevant, and produces a structured summary — key facts, numbers, structure, patterns, anomalies.
 

@@ -7,10 +7,12 @@ IMAGE: https://github.com/user-attachments/assets/1d7daa56-701b-4036-ba5c-486671
 # Deploy a Perplexity-Like AI Chat Interface with Web Search, Voice Input, and Multi-Model Selection on AWS — In Minutes
 
 > 🔗 **Try the live demo:** [www.whyshock.com/apps/friday](http://www.whyshock.com/apps/friday/index.html)
+
 > 📧 **Want the deployment scripts?** Contact **i@whyshock.com** to get the source code and deploy FRIDAY to your own AWS account.
+
 > **GitHub Repo Link: [friday-ai-chatbot-like-perplexity-aws](https://github.com/whyshock/friday-ai-chatbot-like-perplexity-aws)
 
-Today, I'm sharing **FRIDAY**, an open-source, fully serverless AI chatbot that you can deploy to your own AWS account in under 10 minutes. It gives you a Perplexity-style chat interface with access to 20+ AI models — Anthropic Claude 4.x, 3.7, 3.5, Amazon Nova, and any custom Amazon Bedrock model ID — all from a single dropdown. No API keys, no SaaS subscriptions, no servers to manage.
+Here, I'm sharing **FRIDAY**, an open-source, fully serverless AI chatbot that you can deploy to your own AWS account in under 10 minutes. It gives you a Perplexity-style chat interface with access to 20+ AI models — Anthropic Claude 4.x, 3.7, 3.5, Amazon Nova, and any custom Amazon Bedrock model ID — all from a single dropdown. No API keys, no SaaS subscriptions, no servers to manage.
 
 FRIDAY supports web search with citations (DuckDuckGo built-in, Brave Search API optional), voice input via the Web Speech API, large file attachments up to 100 MB (PDFs, Office documents, code files, images), real-time streaming responses, extended thinking mode, conversation branching, a smart file summarizer that cuts token costs by up to 90%, and live session cost tracking. The entire infrastructure is defined in a single AWS CloudFormation template.
 

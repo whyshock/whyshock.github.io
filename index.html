@@ -37,10 +37,140 @@
                     <a href="#" class="nav-link nav-dropdown-toggle">APPS <i class="fas fa-chevron-down" style="font-size:0.6rem;margin-left:0.3rem;"></i></a>
                     <div class="nav-dropdown-menu">
                         <a href="apps/astrocheck/index.html" class="nav-dropdown-item">Astrocheck</a>
-                        <a href="apps/aura/index.html" class="nav-dropdown-item">Aura</a>
                         <a href="apps/friday/index.html" class="nav-dropdown-item">Friday</a>
+                        <a href="apps/aura/index.html" class="nav-dropdown-item">Aura VR Education</a>
                     </div>
                 </div>
+                <a href="blog.html" class="nav-link">BLOG</a>
+                <a href="#contact" class="nav-link">CONTACT</a>
+            </div>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-background">
+            <div class="matrix-rain"></div>
+            <div class="cyber-grid"></div>
+            <div class="floating-elements"></div>
+            <canvas id="neural-canvas"></canvas>
+        </div>
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1 class="hero-title">
+                    <span class="glitch-text" data-text="VAISHAKH I KUPPAST">VAISHAKH I KUPPAST</span>
+                </h1>
+                <div class="hero-subtitle-container">
+                    <p class="hero-subtitle">SDE · Cloud Security · Edge/CDN · Media Expert · AI Researcher · Ex-Founder</p>
+                </div>
+                <p class="hero-description">
+                    6+ years at Amazon Web Services — from building security controls that protect millions of cloud resources to running live streaming infrastructure for 25M+ concurrent viewers. 
+                    Founded an EdTech startup, shipped AI research at Samsung, and built community platforms since I was 18. 
+                    Always chasing the next challenge — I thrive on learning, building, and pushing boundaries.
+                </p>
+                <!---
+                <div class="hero-stats">
+                    <div class="stat">
+                        <span class="stat-number">5+</span>
+                        <span class="stat-label">Years Experience</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">50+</span>
+                        <span class="stat-label">Projects Delivered</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">100K+</span>
+                        <span class="stat-label">Users Impacted</span>
+                    </div>
+                </div> --->
+                <div class="hero-buttons">
+                    <button class="btn btn-primary" onclick="scrollToSection('projects')">
+                        <i class="fas fa-code"></i> EXPLORE MY SOLUTIONS
+                        <span class="btn-hint">From AI chatbots to migration tools</span>
+                    </button>
+                    <button class="btn btn-secondary" onclick="scrollToSection('contact')">
+                        <i class="fas fa-terminal"></i> INITIATE CONTACT
+                        <span class="btn-hint">Got an idea? Let's talk</span>
+                    </button>
+                    <a href="blog.html" class="btn btn-secondary">
+                        <i class="fas fa-book-open"></i> READ MY BLOGS
+                        <span class="btn-hint">Tech, life & more</span>
+                    </a>
+                    <button class="btn btn-tertiary" onclick="downloadResume()">
+                        <i class="fas fa-download"></i> DOWNLOAD RESUME
+                    </button>
+                </div>
+            </div>
+            <div class="hero-avatar">
+                <div class="avatar-container">
+                    <div class="avatar-frame">
+                        <img src="img/me.jpg" alt="Vaishak I Kuppast" class="avatar-img">
+                        <div class="avatar-scanner"></div>
+                    </div>
+                    <div class="avatar-glow"></div>
+                </div>
+            </div>
+        </div>
+        <div class="scroll-indicator">
+            <span class="scroll-text">SCROLL TO EXPLORE</span>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about">
+        <div class="container">
+            <h2 class="section-title">
+                <span class="glitch-text" data-text="SYSTEM ARCHITECT">SYSTEM ARCHITECT</span>
+            </h2>
+            <div class="about-content">
+                <div class="about-main">
+                    <div class="about-text">
+                        <div class="about-intro">
+                            <h3 class="about-subtitle">Engineer · Builder · Researcher · Founder</h3>
+                            <p class="about-description">
+                                System Development Engineer at AWS, currently building cloud security posture management for Security Hub. 
+                                Over 6 years at Amazon — progressed from intern to SDE, working across networking, edge/CDN, media streaming, and now security. 
+                                Before AWS, I was an AI researcher at Samsung PRISM, founded an EdTech startup (Aura VR Education), and built community platforms that serve 1000+ users.
+                            </p>
+                        </div>
+                        
+                        <div class="expertise-areas">
+                            <h4>Core Expertise</h4>
+                            <div class="expertise-grid">
+                                <div class="expertise-item">
+                                    <i class="fas fa-cloud"></i>
+                                    <div>
+                                        <h5>Cloud Architecture</h5>
+                                        <p>Designing scalable, fault-tolerant cloud infrastructure using AWS services, microservices patterns, and serverless computing.</p>
+                                    </div>
+                                </div>
+                                <div class="expertise-item">
+                                    <i class="fas fa-brain"></i>
+                                    <div>
+                                        <h5>Machine Learning Engineering</h5>
+                                        <p>Building and deploying ML pipelines, computer vision systems, and deep learning models for production environments.</p>
+                                    </div>
+                                </div>
+                                <div class="expertise-item">
+                                    <i class="fas fa-robot"></i>
+                                    <div>
+                                        <h5>IoT & Edge Computing</h5>
+                                        <p>Developing edge AI solutions, IoT device management, and real-time data processing systems for industrial applications.</p>
+                                    </div>
+                                </div>
+                                <div class="expertise-item">
+                                    <i class="fas fa-shield-alt"></i>
+                                    <div>
+                                        <h5>Security & Compliance</h5>
+                                        <p>Implementing zero-trust architectures, encryption protocols, and compliance frameworks for enterprise security.</p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="certifications">

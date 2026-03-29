@@ -46,8 +46,11 @@ jobs:
               content = f.read()
 
           new_content = re.sub(
-              r'<div class="nav-dropdown">.*?<\/div>\s*<\/div>\s*<\/div>',
-              replacement,
+              r'<div class="nav-dropdown-menu">.*?</div>\s*</div>',
+              '<div class="nav-dropdown-menu">\n'
+              f'{items}\n'
+              '                    </div>\n'
+              '                </div>',
               content,
               flags=re.DOTALL,
               count=1

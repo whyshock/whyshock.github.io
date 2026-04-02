@@ -105,7 +105,7 @@ I didn't set out to build five caching layers. I built one, found it wasn't enou
 
 Google provides something called `CacheService`, a built-in key-value store that lives on Google's servers and is shared across all users of your script. It has a 6-hour time-to-live: you store something, and it's available to everyone for 6 hours before it expires. I serialize the profile map to JSON and store it there. Now User A pays the cost of building the map, and Users B through Z for the next 6 hours get it from cache. The Sheets read that took 2 seconds becomes a cache hit that takes 50 milliseconds.
 
-**The third cache was the one that changed everything.** I was watching my wife browse the app on her phone. She'd open it, wait 3 seconds for profiles to load, scroll through them, close the app, open it 10 minutes later, and wait 3 seconds again. Same profiles. Same data. Nothing had changed. But the app fetched everything from scratch every single time.
+**The third cache was the one that changed everything.** I was watching my friend browse the app on her phone. She'd open it, wait 3 seconds for profiles to load, scroll through them, close the app, open it 10 minutes later, and wait 3 seconds again. Same profiles. Same data. Nothing had changed. But the app fetched everything from scratch every single time.
 
 That's when I started thinking about localStorage. What if the browser remembered the profiles it already had? The key insight was that profiles don't change every minute. Someone registers or edits their profile maybe a few times a day. So the frontend checks: "Is my cached data from today?" If yes, render from cache instantly. Zero server calls. If no, fetch fresh.
 

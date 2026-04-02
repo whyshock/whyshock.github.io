@@ -4,8 +4,7 @@ AUTHOR: Vaishakh Kuppast
 TAGS: Google, Appscripts, Serverless, Zero-Cost, Open Source 
 IMAGE: https://github.com/user-attachments/assets/bfadd132-699b-4825-8bac-ea90979735d0
 
-# Intelligent Strategies to Build a Zero(0) Infrastructure Cost Matrimony App 
-
+# Intelligent Strategies to Build a Zero-Infrastructure Matrimony App
 
 What does it take to serve a thousand users when you can't afford a single server?
 
@@ -21,11 +20,39 @@ This is the story of those strategies: how each one emerged from a specific prob
 
 ---
 
+## Why a Spreadsheet Backed App ? The Origin Story
+
+The idea started with a conversation at a family gathering. Someone mentioned how expensive matrimonial platforms had become. ₹5,000 just to see a phone number. ₹10,000 for "premium" features. For families in smaller towns, especially in communities where matchmaking has always been a collective, informal process, these prices felt extractive.
+
+I said, half-jokingly, "I could build one for free." And then I couldn't stop thinking about it.
+
+The first thing I did was list what a matrimonial platform actually needs: user profiles with photos, a way to browse and filter, a shortlist, a way to express interest, and the ability to share contact details once both sides agree. That's it. No AI matching. No video calls. No premium tiers. Just the digital equivalent of what aunties have been doing at weddings for centuries.
+
+The second thing I did was list what I couldn't spend money on: everything. No domain hosting fees. No database subscriptions. No cloud compute bills. The platform had to be free to run, because the moment it costs money, someone has to pay, and then we're back to the problem we're trying to solve.
+
+So I started eliminating options. Firebase? Free tier is generous, but Firestore has daily limits that would bite at scale. A VPS? Even the cheapest is ₹500/month. Heroku free tier? Gone. Vercel? Great for static sites, but I need a database.
+
+Then I looked at what I already had for free. Every Google account comes with Sheets (10 million cells), Drive (15GB storage), and Apps Script (server-side JavaScript with free execution). Sheets can store structured data. Drive can store files. Apps Script can serve HTML and run backend logic.
+
+Could a spreadsheet actually be a database? Not a good one. Not a fast one. But a *functional* one? I opened a blank Sheet, typed "Email, Password, Name, Age, Gender" across the first row, and started building.
+
+The thing about spreadsheets that nobody talks about in engineering circles is that they're *transparent*. You can open the Sheet and see every user, every interaction, every piece of data. There's no abstraction layer. No ORM. No query language. Just rows and columns that a non-technical community elder can understand. For a platform built on trust, where a known person in the community is managing the data, that transparency turned out to be a feature I didn't plan for.
+
+Apps Script's `HtmlService` can serve a full HTML page, meaning when someone visits your deployed URL, Google's servers hand them your HTML file directly, no hosting needed. The frontend communicates with the backend through `google.script.run`, which is essentially a bridge: your webpage calls a JavaScript function, and that function executes on Google's servers with full access to your Sheets and Drive. It's like having an API endpoint, except you didn't set up a server. Google did it for you.
+
+The entry point is a function called `doGet()`. When someone opens your web app URL, Google Apps Script calls `doGet()`, which returns your HTML page. Think of it as the front door: every visitor knocks on `doGet()`, and it hands them the app.
+
+Google Drive's file API lets you upload and serve images. Stitch these together and you have a three-file full-stack application: `main.html` for the landing page, `index.html` for the app, `code.gs` for the backend. No build step. No deployment pipeline. Paste the code, click deploy, share the URL.
+
+The architecture looks absurd on paper. It looked absurd to me when I started. But it works. The question was never whether it could work. The question was whether it could work *well enough* that users wouldn't notice the spreadsheet underneath.
+
+---
+
 ## The Problem Nobody Warns You About
 
 Think about what happens when you open any social app. You see a feed. Behind that feed is a database query that took maybe 2 milliseconds, hitting an index, returning 20 rows.
 
-Now imagine that same feed, except every time you open it, the app reads *every record ever created*, loads it all into memory, loops through it, and picks the ones relevant to you. That's what `getDataRange().getValues()` does in Google Sheets. There's no index. There's no query optimizer. There's just "give me everything."
+Now imagine that same feed, except every time you open it, the app reads *every record ever created*, loads it all into memory, loops through it, and picks the ones relevant to you. That's how reading data from Google Sheets works. The command is `getDataRange().getValues()`, and it does exactly what it sounds like: get the entire data range, get all the values. There's no "WHERE clause." There's no "LIMIT 20." There's no index to speed things up. You ask for data, you get *all* of it, every row, every column, every time.
 
 With 50 users, nobody notices. With 500, it takes 2-3 seconds. With 1000, you're staring at a loading screen wondering if the app crashed.
 
@@ -74,9 +101,9 @@ I didn't set out to build five caching layers. I built one, found it wasn't enou
 
 **The first cache was obvious.** Within a single Apps Script execution, I might need the Profiles sheet three times: once to find the user, once to build the browse list, once to resolve wishlist entries. Each `getData()` call reads the entire sheet. So I wrapped it in a variable: read once, return the cached copy on subsequent calls within the same execution. Simple. Cut redundant reads by 60%.
 
-**The second cache came from watching server logs.** User A logs in, and the app builds a profile map (RID to profile lookup). User B logs in 30 seconds later and builds the exact same map from scratch. Same data, same computation, wasted twice.
+**The second cache came from watching server logs.** User A logs in, and the app builds a profile map (a lookup table that maps each user's ID to their profile data). User B logs in 30 seconds later and builds the exact same map from scratch. Same data, same computation, wasted twice.
 
-Google provides `CacheService.getScriptCache()`, a shared key-value store with a 6-hour TTL. I serialize the profile map to JSON and store it there. Now User A pays the cost of building the map, and Users B through Z for the next 6 hours get it from cache. The Sheets read that took 2 seconds becomes a cache hit that takes 50 milliseconds.
+Google provides something called `CacheService`, a built-in key-value store that lives on Google's servers and is shared across all users of your script. It has a 6-hour time-to-live: you store something, and it's available to everyone for 6 hours before it expires. I serialize the profile map to JSON and store it there. Now User A pays the cost of building the map, and Users B through Z for the next 6 hours get it from cache. The Sheets read that took 2 seconds becomes a cache hit that takes 50 milliseconds.
 
 **The third cache was the one that changed everything.** I was watching my wife browse the app on her phone. She'd open it, wait 3 seconds for profiles to load, scroll through them, close the app, open it 10 minutes later, and wait 3 seconds again. Same profiles. Same data. Nothing had changed. But the app fetched everything from scratch every single time.
 
@@ -172,11 +199,13 @@ The server call takes the same amount of time. Nothing changed on the backend. B
 
 ## Batch Writes: One Call Instead of Forty
 
-This one is pure engineering, no story needed. But the numbers are worth sharing.
+This one is pure engineering, but the numbers are worth sharing.
 
-When I remove an interaction from a user's horizontal row, the straightforward approach is: clear the three cells (RID, date, status), then shift every subsequent triplet left to fill the gap, then clear the trailing empty cells. For a row with 20 interactions, that's roughly 40 individual `getRange().setValue()` calls. Each one is a network round-trip to Google's servers.
+In Apps Script, every time you want to change a cell in a Sheet, you call something like `sheet.getRange(row, column).setValue(data)`. That's one network round-trip to Google's servers. It goes over the internet, hits Google's infrastructure, writes the cell, and comes back. Fast for one cell. Catastrophic for forty.
 
-The optimized approach: read the row once into a JavaScript array, rebuild it in memory without the deleted entry, pad with empty strings, write the entire array back in one `setValues()` call. One network round-trip instead of forty.
+When I remove an interaction from a user's horizontal row, the straightforward approach would be: clear the three cells (RID, date, status), then shift every subsequent triplet left to fill the gap, then clear the trailing empty cells. For a row with 20 interactions, that's roughly 40 individual `setValue()` calls. Forty round-trips to Google.
+
+The optimized approach: read the row once into a JavaScript array, rebuild it in memory without the deleted entry, pad with empty strings, write the entire array back in one `setValues()` call. Notice the plural: `setValues()` (with an "s") writes an entire range at once. One network round-trip instead of forty.
 
 I apply this pattern everywhere: interest deletion, status updates, wishlist modifications. Read once, compute in memory, write once. The code is slightly more complex, but when Sheets is under load from multiple concurrent users, the difference between 1 API call and 40 is the difference between "works" and "times out."
 

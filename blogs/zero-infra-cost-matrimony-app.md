@@ -4,7 +4,7 @@ AUTHOR: Vaishakh Kuppast
 TAGS: Google, Appscripts, Serverless, Zero-Cost, Open Source 
 IMAGE: https://github.com/user-attachments/assets/bfadd132-699b-4825-8bac-ea90979735d0
 
-# Intelligent Strategies to Build a Zero-Infrastructure Matrimony App
+# Intelligent Strategies to Build a Zero(0) Infrastructure Cost, Matrimony App
 
 What does it take to serve a thousand users when you can't afford a single server?
 

@@ -17,7 +17,7 @@ This is the story of those strategies: how each one emerged from a specific prob
 
 **Live:** [rishtas.github.io](https://rishtas.github.io)
 
-![Rishtas.in](Rishtas-wesbite%20Main%20page.jpeg)
+![Rishtas.in](https://github.com/user-attachments/assets/bfadd132-699b-4825-8bac-ea90979735d0)
 
 ---
 

@@ -1,0 +1,12 @@
+name = "garmin-oauth-proxy"
+main = "src/index.ts"
+compatibility_date = "2024-12-01"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+ALLOWED_ORIGINS = "http://localhost:5173,http://localhost:4173,https://kuppast.github.io"
+
+# Secrets (set via `wrangler secret put`):
+# - GARMIN_CONSUMER_KEY
+# - GARMIN_CONSUMER_SECRET
+# - ENCRYPTION_KEY

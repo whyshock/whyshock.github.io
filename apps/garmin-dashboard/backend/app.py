@@ -75,8 +75,11 @@ def sync():
                     "steps": stats.get("totalSteps", 0) or 0,
                     "restingHeartRate": stats.get("restingHeartRate"),
                     "stressLevel": stats.get("averageStressLevel"),
-                    "bodyBattery": stats.get("bodyBatteryHighestValue"),
+                    "bodyBattery": stats.get("bodyBatteryHighestValue") or stats.get("bodyBatteryMostRecentValue") or stats.get("bodyBatteryChargedValue"),
                     "respirationRate": stats.get("averageRespirationValue"),
+                    "vo2Max": stats.get("vo2MaxValue"),
+                    "calories": stats.get("totalKilocalories") or stats.get("activeKilocalories"),
+                    "intensity": stats.get("intensityMinutesGoal"),
                 }
 
                 # Sleep

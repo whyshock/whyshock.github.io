@@ -1,0 +1,1 @@
+import{j as e}from"./query-CeqIzYmy.js";import"./vendor-B8OMTMu9.js";function t(){return e.jsxs("div",{className:"p-6",children:[e.jsx("h1",{className:"text-2xl font-bold text-text-primary",children:"Exercises"}),e.jsx("p",{className:"mt-2 text-text-secondary",children:"Your exercise library will appear here."})]})}export{t as default};

@@ -103,6 +103,61 @@ def sync():
             except Exception:
                 pass
 
+        # Fetch detailed time-series data for the most recent day
+        daily_details = {}
+        try:
+            latest_date = today.isoformat()
+
+            # Heart rate timeline
+            hr_data = client.get_heart_rates(latest_date)
+            hr_timeline = []
+            if hr_data and "heartRateValues" in hr_data:
+                for entry in hr_data["heartRateValues"]:
+                    if entry and len(entry) >= 2 and entry[1] and entry[1] > 0:
+                        # entry[0] is timestamp in ms, entry[1] is HR value
+                        ts = entry[0]
+                        if ts:
+                            from datetime import datetime as dt
+                            time_str = dt.fromtimestamp(ts / 1000).isoformat()
+                            hr_timeline.append({"time": time_str, "value": entry[1]})
+
+            # Stress timeline
+            stress_data = client.get_stress_data(latest_date)
+            stress_timeline = []
+            if stress_data and "stressValuesArray" in stress_data:
+                for entry in stress_data["stressValuesArray"]:
+                    if entry and len(entry) >= 2 and entry[1] and entry[1] > 0:
+                        ts = entry[0]
+                        if ts:
+                            from datetime import datetime as dt
+                            time_str = dt.fromtimestamp(ts / 1000).isoformat()
+                            stress_timeline.append({"time": time_str, "value": entry[1]})
+
+            # Body battery timeline
+            bb_data = client.get_body_battery(latest_date)
+            bb_timeline = []
+            if bb_data and isinstance(bb_data, list):
+                for entry in bb_data:
+                    if isinstance(entry, dict):
+                        ts = entry.get("startTimestampGMT") or entry.get("startTimestampLocal")
+                        val = entry.get("charged") or entry.get("bodyBatteryLevel")
+                        if ts and val:
+                            from datetime import datetime as dt
+                            if isinstance(ts, (int, float)):
+                                time_str = dt.fromtimestamp(ts / 1000).isoformat()
+                            else:
+                                time_str = str(ts)
+                            bb_timeline.append({"time": time_str, "value": val})
+
+            if hr_timeline or stress_timeline or bb_timeline:
+                daily_details[latest_date] = {
+                    "heartRates": hr_timeline,
+                    "stressReadings": stress_timeline,
+                    "bodyBatteryReadings": bb_timeline,
+                }
+        except Exception:
+            pass
+
         # Fetch activities
         activities = []
         try:
@@ -137,6 +192,7 @@ def sync():
             "success": True,
             "data": {
                 "dailySummaries": daily_summaries,
+                "dailyDetails": daily_details,
                 "activities": activities,
                 "displayName": display_name or "Garmin User",
             }

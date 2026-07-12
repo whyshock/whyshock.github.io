@@ -19,7 +19,8 @@ CORS(app, origins=[
     "http://localhost:5173",
     "http://localhost:4173",
     "https://kuppast.github.io",
-    # Add more origins as needed
+    "https://www.whyshock.com",
+    "https://whyshock.com",
 ])
 
 

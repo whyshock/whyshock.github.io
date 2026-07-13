@@ -218,9 +218,8 @@ def sync():
 @app.route("/api/activity/<activity_id>/route", methods=["POST"])
 def get_activity_route(activity_id):
     """
-    Fetches GPS route data for a specific activity using geoPolylineDTO.
-    Requires credentials in the body (same as /api/sync).
-    Returns decoded lat/lon coordinates.
+    Fetches GPS route + detailed metrics for a specific activity.
+    Returns decoded lat/lon coordinates plus splits, HR zones, training effect.
     """
     body = request.get_json()
     if not body:
@@ -236,13 +235,58 @@ def get_activity_route(activity_id):
         client = Garmin(email, password)
         client.login()
 
-        # Get activity details which contains geoPolylineDTO
-        details = client.get_activity_details(activity_id)
+        # Get full activity summary (has training effect, max speed, etc.)
+        activity_summary = None
+        try:
+            activity_summary = client.get_activity(activity_id)
+        except Exception:
+            pass
 
+        # Get activity details (has geoPolylineDTO)
+        details = None
+        try:
+            details = client.get_activity_details(activity_id)
+        except Exception:
+            pass
+
+        # Get splits/laps
+        splits = []
+        try:
+            splits_data = client.get_activity_splits(activity_id)
+            if splits_data and "lapDTOs" in splits_data:
+                for i, lap in enumerate(splits_data["lapDTOs"]):
+                    splits.append({
+                        "index": i + 1,
+                        "distance": lap.get("distance", 0),
+                        "duration": lap.get("duration", 0) or lap.get("movingDuration", 0),
+                        "avgHR": lap.get("averageHR"),
+                        "maxHR": lap.get("maxHR"),
+                        "avgSpeed": lap.get("averageSpeed"),
+                        "maxSpeed": lap.get("maxSpeed"),
+                        "calories": lap.get("calories"),
+                        "elevationGain": lap.get("elevationGain"),
+                    })
+        except Exception:
+            pass
+
+        # Get HR zones
+        hr_zones = []
+        try:
+            hr_data = client.get_activity_hr_in_timezones(activity_id)
+            if hr_data and isinstance(hr_data, list):
+                for i, zone in enumerate(hr_data):
+                    hr_zones.append({
+                        "zone": i + 1,
+                        "minHR": zone.get("zoneLowBoundary", 0),
+                        "maxHR": zone.get("zoneHighBoundary", 0),
+                        "timeInZone": zone.get("secsInZone", 0),
+                    })
+        except Exception:
+            pass
+
+        # Extract GPS route
         gps_route = []
-
         if details and isinstance(details, dict):
-            # Strategy 1: Look for geoPolylineDTO
             geo_polyline = details.get("geoPolylineDTO")
             if geo_polyline and isinstance(geo_polyline, dict):
                 polyline_points = geo_polyline.get("polyline", [])
@@ -255,25 +299,36 @@ def get_activity_route(activity_id):
                                 "elevation": point.get("altitude"),
                             })
 
-            # Fallback: check metricDescriptors + activityDetailMetrics for coordinate data
-            if not gps_route:
-                metrics = details.get("activityDetailMetrics", [])
-                if metrics and isinstance(metrics, list):
-                    for metric in metrics:
-                        if isinstance(metric, dict):
-                            lat = metric.get("directLatitude") or metric.get("latitude")
-                            lon = metric.get("directLongitude") or metric.get("longitude")
-                            if lat is not None and lon is not None:
-                                gps_route.append({
-                                    "lat": lat / 1.0,  # Garmin stores as semicircles sometimes
-                                    "lon": lon / 1.0,
-                                    "elevation": metric.get("directElevation") or metric.get("elevation"),
-                                })
+        # Extract extra metrics from activity summary
+        extra_metrics = {}
+        if activity_summary and isinstance(activity_summary, dict):
+            extra_metrics = {
+                "maxSpeed": activity_summary.get("maxSpeed"),
+                "avgSpeed": activity_summary.get("averageSpeed"),
+                "movingDuration": activity_summary.get("movingDuration"),
+                "elapsedDuration": activity_summary.get("elapsedDuration") or activity_summary.get("duration"),
+                "avgCadence": activity_summary.get("averageRunningCadenceInStepsPerMinute") or activity_summary.get("averageBikingCadenceInRevPerMinute"),
+                "maxCadence": activity_summary.get("maxRunningCadenceInStepsPerMinute") or activity_summary.get("maxBikingCadenceInRevPerMinute"),
+                "aerobicTE": activity_summary.get("aerobicTrainingEffect"),
+                "anaerobicTE": activity_summary.get("anaerobicTrainingEffect"),
+                "elevationGain": activity_summary.get("elevationGain"),
+                "elevationLoss": activity_summary.get("elevationLoss"),
+                "minElevation": activity_summary.get("minElevation"),
+                "maxElevation": activity_summary.get("maxElevation"),
+                "avgPower": activity_summary.get("avgPower"),
+                "maxPower": activity_summary.get("maxPower"),
+                "normPower": activity_summary.get("normPower"),
+                "strideLength": activity_summary.get("avgStrideLength"),
+                "vo2MaxValue": activity_summary.get("vO2MaxValue"),
+            }
 
         return jsonify({
             "activityId": activity_id,
             "gpsRoute": gps_route,
             "pointCount": len(gps_route),
+            "splits": splits,
+            "hrZones": hr_zones,
+            "metrics": extra_metrics,
         })
 
     except Exception as e:

@@ -760,35 +760,11 @@ function initNeuralCanvas() {
     draw();
 }
 
-// AI-themed floating icons
-function createAIFloatingIcons() {
-    const container = document.querySelector('.floating-elements');
-    if (!container) return;
-
-    const icons = ['☁️', '🧠', '⚡', '🔗', '📡', '💡', '🤖', '🛰️'];
-
-    for (let i = 0; i < 8; i++) {
-        const el = document.createElement('span');
-        el.textContent = icons[i % icons.length];
-        el.style.cssText = `
-            position: absolute;
-            font-size: ${14 + Math.random() * 14}px;
-            opacity: ${0.08 + Math.random() * 0.12};
-            left: ${Math.random() * 100}%;
-            top: ${Math.random() * 100}%;
-            animation: float ${15 + Math.random() * 20}s linear infinite;
-            animation-delay: ${Math.random() * 10}s;
-            pointer-events: none;
-            filter: grayscale(0.5);
-        `;
-        container.appendChild(el);
-    }
 }
 
 // Initialize neural canvas and AI icons after load
 document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
         initNeuralCanvas();
-        createAIFloatingIcons();
     }, 1500);
 });

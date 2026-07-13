@@ -5,11 +5,29 @@
     <link rel="icon" type="image/svg+xml" href="/apps/garmin-dashboard/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Garmin Fitness Dashboard</title>
-    <script type="module" crossorigin src="/apps/garmin-dashboard/assets/index-DFeTo9nf.js"></script>
+    <script>
+      // Apply theme immediately before React renders to prevent flash
+      (function() {
+        try {
+          var keys = Object.keys(localStorage);
+          var theme = null;
+          for (var i = 0; i < keys.length; i++) {
+            if (keys[i].endsWith(':preferences')) {
+              var prefs = JSON.parse(localStorage.getItem(keys[i]));
+              if (prefs && prefs.theme) { theme = prefs.theme; break; }
+            }
+          }
+          if (!theme) theme = 'system';
+          var isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+          if (isDark) document.documentElement.classList.add('dark');
+        } catch(e) {}
+      })();
+    </script>
+    <script type="module" crossorigin src="/apps/garmin-dashboard/assets/index-U8_sxK82.js"></script>
     <link rel="modulepreload" crossorigin href="/apps/garmin-dashboard/assets/vendor-B8OMTMu9.js">
     <link rel="modulepreload" crossorigin href="/apps/garmin-dashboard/assets/query-CeqIzYmy.js">
     <link rel="modulepreload" crossorigin href="/apps/garmin-dashboard/assets/state-DQiTvTIQ.js">
-    <link rel="stylesheet" crossorigin href="/apps/garmin-dashboard/assets/index-CsZIVK62.css">
+    <link rel="stylesheet" crossorigin href="/apps/garmin-dashboard/assets/index-CtUO8gfb.css">
   </head>
   <body>
     <div id="root"></div>

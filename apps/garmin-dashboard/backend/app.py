@@ -215,6 +215,74 @@ def sync():
         }), 500
 
 
+@app.route("/api/activity/<activity_id>/route", methods=["POST"])
+def get_activity_route(activity_id):
+    """
+    Fetches GPS route data for a specific activity using geoPolylineDTO.
+    Requires credentials in the body (same as /api/sync).
+    Returns decoded lat/lon coordinates.
+    """
+    body = request.get_json()
+    if not body:
+        return jsonify({"error": "Missing request body"}), 400
+
+    email = body.get("email")
+    password = body.get("password")
+
+    if not email or not password:
+        return jsonify({"error": "Email and password are required"}), 400
+
+    try:
+        client = Garmin(email, password)
+        client.login()
+
+        # Get activity details which contains geoPolylineDTO
+        details = client.get_activity_details(activity_id)
+
+        gps_route = []
+
+        if details and isinstance(details, dict):
+            # Strategy 1: Look for geoPolylineDTO
+            geo_polyline = details.get("geoPolylineDTO")
+            if geo_polyline and isinstance(geo_polyline, dict):
+                polyline_points = geo_polyline.get("polyline", [])
+                if polyline_points and isinstance(polyline_points, list):
+                    for point in polyline_points:
+                        if isinstance(point, dict) and point.get("lat") is not None and point.get("lon") is not None:
+                            gps_route.append({
+                                "lat": point["lat"],
+                                "lon": point["lon"],
+                                "elevation": point.get("altitude"),
+                            })
+
+            # Fallback: check metricDescriptors + activityDetailMetrics for coordinate data
+            if not gps_route:
+                metrics = details.get("activityDetailMetrics", [])
+                if metrics and isinstance(metrics, list):
+                    for metric in metrics:
+                        if isinstance(metric, dict):
+                            lat = metric.get("directLatitude") or metric.get("latitude")
+                            lon = metric.get("directLongitude") or metric.get("longitude")
+                            if lat is not None and lon is not None:
+                                gps_route.append({
+                                    "lat": lat / 1.0,  # Garmin stores as semicircles sometimes
+                                    "lon": lon / 1.0,
+                                    "elevation": metric.get("directElevation") or metric.get("elevation"),
+                                })
+
+        return jsonify({
+            "activityId": activity_id,
+            "gpsRoute": gps_route,
+            "pointCount": len(gps_route),
+        })
+
+    except Exception as e:
+        return jsonify({
+            "error": "route_fetch_failed",
+            "message": str(e),
+        }), 500
+
+
 def map_type(key: str) -> str:
     k = key.lower()
     if "run" in k: return "running"

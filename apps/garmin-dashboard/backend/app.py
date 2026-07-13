@@ -173,7 +173,7 @@ def sync():
                     "activityId": str(act.get("activityId", "")),
                     "activityType": activity_type,
                     "activityName": act.get("activityName", ""),
-                    "startTime": act.get("startTimeGMT", ""),
+                    "startTime": act.get("startTimeLocal", "") or act.get("startTimeGMT", ""),
                     "duration": act.get("duration", 0) or 0,
                     "distance": act.get("distance"),
                     "calories": act.get("calories"),

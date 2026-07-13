@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apps — WhyShock</title>
+    <link rel="icon" type="image/svg+xml" href="../img/favicon.svg">
+    <link rel="stylesheet" href="../styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .apps-section {
+            padding: 8rem 0 4rem;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        .apps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .app-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2rem;
+            transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .app-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gradient-primary);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .app-card:hover {
+            border-color: var(--accent-primary);
+            box-shadow: 0 10px 40px rgba(59, 130, 246, 0.15);
+            transform: translateY(-4px);
+        }
+
+        .app-card:hover::before {
+            opacity: 1;
+        }
+
+        .app-card-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .app-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            flex-shrink: 0;
+            background: var(--gradient-primary);
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        .app-card-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: 0.5px;
+        }
+
+        .app-card-description {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.7;
+            flex-grow: 1;
+        }
+
+        .app-card-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .app-tag {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            color: var(--accent-primary);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-family: 'Orbitron', monospace;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+        }
+
+        .app-card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 0.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .app-status {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.8rem;
+            color: var(--success-color);
+            font-family: 'Orbitron', monospace;
+        }
+
+        .app-status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--success-color);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .app-launch-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1.2rem;
+            background: var(--gradient-primary);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 8px;
+            font-family: 'Orbitron', monospace;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        .app-launch-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        .light-theme .app-card {
+            background: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .light-theme .app-card:hover {
+            box-shadow: 0 10px 40px rgba(59, 130, 246, 0.1);
+        }
+
+        .light-theme .app-tag {
+            background: rgba(59, 130, 246, 0.06);
+        }
+
+        .apps-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            max-width: 650px;
+            margin: 1rem auto 0;
+            text-align: center;
+        }
+
+        .apps-count {
+            text-align: center;
+            margin: 2rem 0;
+            font-family: 'Orbitron', monospace;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+        }
+
+        @media (max-width: 768px) {
+            .apps-grid {
+                grid-template-columns: 1fr;
+                padding: 0 1rem;
+            }
+            .apps-section {
+                padding: 6rem 0 3rem;
+            }
+        }
+    </style>
+</head>
+<body class="dark-theme">
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="../index.html" style="text-decoration:none;color:inherit;">
+                    <span class="glitch-text" data-text="WHYSHOCK">WHYSHOCK</span>
+                </a>
+            </div>
+            <div class="nav-menu">
+                <a href="../index.html" class="nav-link">HOME</a>
+                <a href="../index.html#about" class="nav-link">ABOUT</a>
+                <a href="../index.html#projects" class="nav-link">PROJECTS</a>
+                <div class="nav-dropdown">
+                    <a href="#" class="nav-link nav-dropdown-toggle" style="color:var(--accent-primary);">APPS <i class="fas fa-chevron-down" style="font-size:0.6rem;margin-left:0.3rem;"></i></a>
+                    <div class="nav-dropdown-menu">
+                        <a href="friday/index.html" class="nav-dropdown-item">Friday</a>
+                        <a href="astrocheck/index.html" class="nav-dropdown-item">Astrocheck</a>
+                        <a href="aura/index.html" class="nav-dropdown-item">Aura VR Education</a>
+                        <a href="4D-3D Models/index.html" class="nav-dropdown-item">4D 3D Models</a>
+                        <a href="garmin-dashboard/index.html" class="nav-dropdown-item">Garmin Dashboard</a>
+                    </div>
+                </div>
+                <a href="../blog.html" class="nav-link">BLOG</a>
+                <a href="../index.html#contact" class="nav-link">CONTACT</a>
+            </div>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <section class="apps-section">
+        <div class="hero-background">
+            <div class="cyber-grid"></div>
+        </div>
+        <div class="container" style="text-align:center;margin-bottom:2rem;">
+            <h2 class="section-title">
+                <span class="glitch-text" data-text="APPLICATIONS">APPLICATIONS</span>
+            </h2>
+            <p class="apps-subtitle">
+                A collection of tools, experiments, and side projects — from AI assistants to fitness dashboards. Each one built to solve a real problem or explore something interesting.
+            </p>
+            <div class="apps-count">[ 5 APPS DEPLOYED ]</div>
+        </div>
+
+        <div class="apps-grid">
+            <!-- Friday -->
+            <div class="app-card">
+                <div class="app-card-header">
+                    <div class="app-icon" style="background: linear-gradient(135deg, #4a7dff, #1e40af);">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <span class="app-card-title">FRIDAY</span>
+                </div>
+                <p class="app-card-description">
+                    Cyberpunk-themed AI assistant powered by AWS Bedrock. Features web search with citations, voice input, file attachments up to 100MB, and a smart file summarizer. Serverless architecture using CloudFront, Lambda, and DynamoDB.
+                </p>
+                <div class="app-card-tags">
+                    <span class="app-tag">AI</span>
+                    <span class="app-tag">AWS Bedrock</span>
+                    <span class="app-tag">Serverless</span>
+                    <span class="app-tag">Voice</span>
+                </div>
+                <div class="app-card-footer">
+                    <div class="app-status">
+                        <span class="app-status-dot"></span>
+                        LIVE
+                    </div>
+                    <a href="friday/index.html" class="app-launch-btn">
+                        LAUNCH <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Astrocheck -->
+            <div class="app-card">
+                <div class="app-card-header">
+                    <div class="app-icon" style="background: linear-gradient(135deg, #9333ea, #6d28d9);">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <span class="app-card-title">ASTROCHECK</span>
+                </div>
+                <p class="app-card-description">
+                    Kundli matching tool that simplifies compatibility analysis using Dasa Koota matching algorithms. Enter birth details and get instant celestial compatibility scores based on traditional Vedic astrology computations.
+                </p>
+                <div class="app-card-tags">
+                    <span class="app-tag">Astrology</span>
+                    <span class="app-tag">Algorithms</span>
+                    <span class="app-tag">Vedic</span>
+                </div>
+                <div class="app-card-footer">
+                    <div class="app-status">
+                        <span class="app-status-dot"></span>
+                        LIVE
+                    </div>
+                    <a href="astrocheck/index.html" class="app-launch-btn">
+                        LAUNCH <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Aura VR Education -->
+            <div class="app-card">
+                <div class="app-card-header">
+                    <div class="app-icon" style="background: linear-gradient(135deg, #6c63ff, #9790ec);">
+                        <i class="fas fa-vr-cardboard"></i>
+                    </div>
+                    <span class="app-card-title">AURA VR EDUCATION</span>
+                </div>
+                <p class="app-card-description">
+                    AR/VR platform for immersive education. Founded as an EdTech startup, Aura brings interactive 3D learning experiences to classrooms — from virtual anatomy labs to historical site walkthroughs.
+                </p>
+                <div class="app-card-tags">
+                    <span class="app-tag">AR/VR</span>
+                    <span class="app-tag">EdTech</span>
+                    <span class="app-tag">3D</span>
+                    <span class="app-tag">Startup</span>
+                </div>
+                <div class="app-card-footer">
+                    <div class="app-status">
+                        <span class="app-status-dot"></span>
+                        LIVE
+                    </div>
+                    <a href="aura/index.html" class="app-launch-btn">
+                        LAUNCH <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- 4D 3D Models -->
+            <div class="app-card">
+                <div class="app-card-header">
+                    <div class="app-icon" style="background: linear-gradient(135deg, #0ea5e9, #0284c7);">
+                        <i class="fas fa-cube"></i>
+                    </div>
+                    <span class="app-card-title">4D 3D MODELS</span>
+                </div>
+                <p class="app-card-description">
+                    Interactive 3D model gallery created for AR/VR education and digital heritage preservation. Rotate, zoom, and explore models rendered via Sketchfab embeds.
+                </p>
+                <div class="app-card-tags">
+                    <span class="app-tag">3D</span>
+                    <span class="app-tag">Sketchfab</span>
+                    <span class="app-tag">Heritage</span>
+                </div>
+                <div class="app-card-footer">
+                    <div class="app-status">
+                        <span class="app-status-dot"></span>
+                        LIVE
+                    </div>
+                    <a href="4D-3D Models/index.html" class="app-launch-btn">
+                        LAUNCH <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Garmin Dashboard -->
+            <div class="app-card">
+                <div class="app-card-header">
+                    <div class="app-icon" style="background: linear-gradient(135deg, #10b981, #059669);">
+                        <i class="fas fa-heartbeat"></i>
+                    </div>
+                    <span class="app-card-title">GARMIN DASHBOARD</span>
+                </div>
+                <p class="app-card-description">
+                    Personal fitness dashboard synced with Garmin Connect. Visualizes activities, daily summaries, training load, body battery, stress, and sleep data. Built with React, Recharts, and Leaflet maps. Supports .FIT file uploads and OAuth sync.
+                </p>
+                <div class="app-card-tags">
+                    <span class="app-tag">Fitness</span>
+                    <span class="app-tag">React</span>
+                    <span class="app-tag">Garmin</span>
+                    <span class="app-tag">Data Viz</span>
+                </div>
+                <div class="app-card-footer">
+                    <div class="app-status">
+                        <span class="app-status-dot"></span>
+                        LIVE
+                    </div>
+                    <a href="garmin-dashboard/index.html" class="app-launch-btn">
+                        LAUNCH <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-text">
+                    <p>&copy; 2025 WhyShock. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating Theme Toggle -->
+    <button id="theme-toggle" class="floating-theme-toggle">
+        <i class="fas fa-sun"></i>
+    </button>
+
+    <script src="../script.js"></script>
+</body>
+</html>

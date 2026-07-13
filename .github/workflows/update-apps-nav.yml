@@ -1,4 +1,4 @@
-name: Update Apps Navigation
+name: Update Apps Page
 
 on:
   push:
@@ -10,64 +10,145 @@ permissions:
   contents: write
 
 jobs:
-  update-apps-nav:
+  update-apps-page:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Update apps dropdown in index.html
+      - name: Regenerate apps/index.html card grid
         run: |
-          python3 - << 'EOF'
-          import re, glob, os
+          python3 - << 'PYEOF'
+          import glob, os, re
 
-          apps = []
-          for d in sorted(glob.glob('apps/**/index.html', recursive=True)):
-              parts = d.replace('apps/', '').replace('/index.html', '')
-              folder = parts.split('/')[-1]
+          # Discover apps - each subfolder of apps/ that contains an index.html
+          # Exclude apps/index.html itself
+          app_dirs = []
+          for d in sorted(glob.glob('apps/*/index.html')):
+              folder = d.split('/')[1]
+              app_dirs.append((folder, d))
+
+          # Metadata for known apps (icon, gradient, tags, description)
+          app_meta = {
+              'friday': {
+                  'icon': 'fa-robot',
+                  'gradient': 'linear-gradient(135deg, #4a7dff, #1e40af)',
+                  'tags': ['AI', 'AWS Bedrock', 'Serverless', 'Voice'],
+                  'desc': 'Cyberpunk-themed AI assistant powered by AWS Bedrock. Features web search with citations, voice input, file attachments up to 100MB, and a smart file summarizer.'
+              },
+              'astrocheck': {
+                  'icon': 'fa-star',
+                  'gradient': 'linear-gradient(135deg, #9333ea, #6d28d9)',
+                  'tags': ['Astrology', 'Algorithms', 'Vedic'],
+                  'desc': 'Kundli matching tool using Dasa Koota matching algorithms. Enter birth details and get instant celestial compatibility scores based on Vedic astrology.'
+              },
+              'aura': {
+                  'icon': 'fa-vr-cardboard',
+                  'gradient': 'linear-gradient(135deg, #6c63ff, #9790ec)',
+                  'tags': ['AR/VR', 'EdTech', '3D', 'Startup'],
+                  'desc': 'AR/VR platform for immersive education. Interactive 3D learning experiences — from virtual anatomy labs to historical site walkthroughs.'
+              },
+              '4D-3D Models': {
+                  'icon': 'fa-cube',
+                  'gradient': 'linear-gradient(135deg, #0ea5e9, #0284c7)',
+                  'tags': ['3D', 'Sketchfab', 'Heritage'],
+                  'desc': 'Interactive 3D model gallery for AR/VR education and digital heritage preservation. Rotate, zoom, and explore.'
+              },
+              'garmin-dashboard': {
+                  'icon': 'fa-heartbeat',
+                  'gradient': 'linear-gradient(135deg, #10b981, #059669)',
+                  'tags': ['Fitness', 'React', 'Garmin', 'Data Viz'],
+                  'desc': 'Personal fitness dashboard synced with Garmin Connect. Visualizes activities, training load, body battery, stress, and sleep data.'
+              },
+          }
+
+          default_meta = {
+              'icon': 'fa-code',
+              'gradient': 'linear-gradient(135deg, #3b82f6, #1e40af)',
+              'tags': ['App'],
+              'desc': 'A WhyShock application.'
+          }
+
+          cards = []
+          for folder, filepath in app_dirs:
+              meta = app_meta.get(folder, default_meta)
+
+              # Try to extract a nice display name from the app's <title>
               display = folder.replace('-', ' ').replace('_', ' ').title()
-              apps.append(f'                        <a href="{d}" class="nav-dropdown-item">{display}</a>')
+              try:
+                  with open(filepath, 'r') as f:
+                      html = f.read()
+                  m = re.search(r'<title>(.*?)</title>', html)
+                  if m:
+                      raw = m.group(1).split('\u2014')[0].split('\u2013')[0].strip()
+                      raw = re.sub(r'[\u2728\u2606\u2605]', '', raw).strip()
+                      if raw and raw.lower() != 'index':
+                          display = raw
+              except:
+                  pass
 
-          if not apps:
-              print("No apps found under apps/, skipping")
+              tags_html = '\n'.join([f'                    <span class="app-tag">{t}</span>' for t in meta['tags']])
+
+              card = f'''            <div class="app-card">
+                <div class="app-card-header">
+                    <div class="app-icon" style="background: {meta['gradient']};">
+                        <i class="fas {meta['icon']}"></i>
+                    </div>
+                    <span class="app-card-title">{display.upper()}</span>
+                </div>
+                <p class="app-card-description">
+                    {meta['desc']}
+                </p>
+                <div class="app-card-tags">
+{tags_html}
+                </div>
+                <div class="app-card-footer">
+                    <div class="app-status">
+                        <span class="app-status-dot"></span>
+                        LIVE
+                    </div>
+                    <a href="{folder}/index.html" class="app-launch-btn">
+                        LAUNCH <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>'''
+              cards.append(card)
+
+          if not cards:
+              print("No apps found, skipping")
               exit(0)
 
-          items = '\n'.join(apps)
-          replacement = (
-              '<div class="nav-dropdown">\n'
-              '                    <a href="#" class="nav-link nav-dropdown-toggle">'
-              'APPS <i class="fas fa-chevron-down" style="font-size:0.6rem;margin-left:0.3rem;"></i></a>\n'
-              '                    <div class="nav-dropdown-menu">\n'
-              f'{items}\n'
-              '                    </div>\n'
-              '                </div>'
-          )
+          num_apps = len(cards)
+          cards_block = '\n\n'.join(cards)
 
-          with open('index.html', 'r') as f:
-              content = f.read()
+          with open('apps/index.html', 'r') as f:
+              page = f.read()
 
-          new_content = re.sub(
-              r'<div class="nav-dropdown-menu">.*?</div>\s*</div>',
-              '<div class="nav-dropdown-menu">\n'
-              f'{items}\n'
-              '                    </div>\n'
-              '                </div>',
-              content,
+          # Replace everything between <div class="apps-grid"> and its closing </div>
+          new_grid = f'''<div class="apps-grid">
+{cards_block}
+        </div>'''
+
+          page = re.sub(
+              r'<div class="apps-grid">.*?</div>\s*</section>',
+              new_grid + '\n    </section>',
+              page,
               flags=re.DOTALL,
               count=1
           )
 
-          if new_content != content:
-              with open('index.html', 'w') as f:
-                  f.write(new_content)
-              print(f"Updated navbar with {len(apps)} app(s): {[a.split('/')[1] for a in glob.glob('apps/*/index.html')]}")
-          else:
-              print("No changes needed")
-          EOF
+          # Update the app count
+          page = re.sub(r'\[ \d+ APPS DEPLOYED \]', f'[ {num_apps} APPS DEPLOYED ]', page)
+
+          with open('apps/index.html', 'w') as f:
+              f.write(page)
+
+          print(f"Updated apps/index.html with {num_apps} app(s): {[f for f, _ in app_dirs]}")
+          PYEOF
 
       - name: Commit changes
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add index.html
-          git diff --cached --quiet || git commit -m "Auto-update apps navigation"
+          git add apps/index.html
+          git diff --cached --quiet || git commit -m "Auto-update apps listing page"
           git push

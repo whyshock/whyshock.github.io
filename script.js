@@ -760,7 +760,6 @@ function initNeuralCanvas() {
     draw();
 }
 
-}
 
 // Initialize neural canvas and AI icons after load
 document.addEventListener('DOMContentLoaded', () => {
